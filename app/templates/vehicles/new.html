@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Nuevo Vehículo - Autos Colombia{% endblock %}
+{% block page_title %}Registrar Vehículo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-car-front me-2"></i>Datos del Vehículo</div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Placa <span class="text-danger">*</span></label>
+              <input type="text" name="plate" class="form-control text-uppercase" required
+                     placeholder="Ej: ABC123" maxlength="10">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tipo <span class="text-danger">*</span></label>
+              <select name="vehicle_type" class="form-select" required>
+                <option value="">Seleccionar...</option>
+                <option value="car">🚗 Carro</option>
+                <option value="motorcycle">🏍️ Motocicleta</option>
+                <option value="truck">🚛 Camión</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Marca <span class="text-danger">*</span></label>
+              <input type="text" name="brand" class="form-control" required placeholder="Ej: Toyota">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Modelo <span class="text-danger">*</span></label>
+              <input type="text" name="model" class="form-control" required placeholder="Ej: Corolla">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Año</label>
+              <input type="number" name="year" class="form-control" placeholder="Ej: 2020" min="1980" max="2030">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Color</label>
+              <input type="text" name="color" class="form-control" placeholder="Ej: Azul">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Propietario <span class="text-danger">*</span></label>
+              <select name="user_id" class="form-select" required>
+                <option value="">Seleccionar usuario...</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.full_name }} — {{ user.document }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Celda Asignada</label>
+              <select name="cell_id" class="form-select">
+                <option value="">Sin celda asignada</option>
+                {% for cell in cells %}
+                <option value="{{ cell.id }}">
+                  {{ cell.number }} — {{ cell.cell_type }} (Piso {{ cell.floor }}) — ${{ "{:,.0f}".format(cell.monthly_fee) }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Registrar Vehículo
+            </button>
+            <a href="{{ url_for('vehicles.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+document.querySelector('[name=plate]').addEventListener('input', function(){ this.value = this.value.toUpperCase(); });
+</script>
+{% endblock %}

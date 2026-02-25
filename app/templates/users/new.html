@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Nuevo Usuario - Autos Colombia{% endblock %}
+{% block page_title %}Registrar Usuario{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-person-plus me-2"></i>Datos del Usuario</div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Nombre Completo <span class="text-danger">*</span></label>
+              <input type="text" name="full_name" class="form-control" required placeholder="Ej: Juan Pérez García">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">N° Documento <span class="text-danger">*</span></label>
+              <input type="text" name="document" class="form-control" required placeholder="Cédula o NIT">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Teléfono <span class="text-danger">*</span></label>
+              <input type="text" name="phone" class="form-control" required placeholder="Ej: 3001234567">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
+              <input type="email" name="email" class="form-control" required placeholder="correo@ejemplo.com">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Dirección</label>
+              <input type="text" name="address" class="form-control" placeholder="Dirección de residencia">
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Registrar Usuario
+            </button>
+            <a href="{{ url_for('users.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

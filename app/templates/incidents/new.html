@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Nueva Novedad - Autos Colombia{% endblock %}
+{% block page_title %}Registrar Novedad{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-exclamation-triangle me-2"></i>Datos de la Novedad</div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Vehículo <span class="text-danger">*</span></label>
+              <select name="vehicle_id" class="form-select" required>
+                <option value="">Seleccionar vehículo...</option>
+                {% for v in vehicles %}
+                <option value="{{ v.id }}">{{ v.plate }} — {{ v.owner.full_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Título <span class="text-danger">*</span></label>
+              <input type="text" name="title" class="form-control" required
+                     placeholder="Ej: Rayón en puerta delantera">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Descripción <span class="text-danger">*</span></label>
+              <textarea name="description" class="form-control" rows="4" required
+                        placeholder="Descripción detallada de la novedad..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Severidad <span class="text-danger">*</span></label>
+              <select name="severity" class="form-select" required>
+                <option value="low">Baja — Daño menor o cosmético</option>
+                <option value="medium" selected>Media — Requiere atención</option>
+                <option value="high">Alta — Urgente / Daño significativo</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Registrar Novedad
+            </button>
+            <a href="{{ url_for('incidents.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

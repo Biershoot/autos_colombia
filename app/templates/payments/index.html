@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Pagos - Autos Colombia{% endblock %}
+{% block page_title %}Gestión de Pagos{% endblock %}
+{% block topbar_actions %}
+<a href="{{ url_for('payments.new') }}" class="btn btn-primary btn-sm">
+  <i class="bi bi-plus-lg me-1"></i>Registrar Pago
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body py-2 px-3">
+    <form class="row g-2 align-items-end" method="get">
+      <div class="col-md-3">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Todos los estados</option>
+          <option value="paid"    {% if status=='paid'    %}selected{% endif %}>Pagado</option>
+          <option value="pending" {% if status=='pending' %}selected{% endif %}>Pendiente</option>
+          <option value="overdue" {% if status=='overdue' %}selected{% endif %}>Vencido</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="month" class="form-select form-select-sm">
+          <option value="">Todos los meses</option>
+          {% for m in range(1,13) %}
+          <option value="{{ m }}" {% if month|string == m|string %}selected{% endif %}>
+            {{ ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'][m-1] }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="number" name="year" class="form-control form-control-sm" value="{{ year }}" placeholder="Año">
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-primary btn-sm w-100"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+        <a href="{{ url_for('payments.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th class="ps-4">#</th>
+          <th>Usuario</th>
+          <th>Período</th>
+          <th>Monto</th>
+          <th>Método</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for payment, user in payments.items %}
+        <tr>
+          <td class="ps-4 text-muted small">{{ payment.id }}</td>
+          <td class="fw-semibold small">{{ user.full_name }}</td>
+          <td class="text-muted small">{{ payment.period_month }}/{{ payment.period_year }}</td>
+          <td class="fw-semibold">${{ "{:,.0f}".format(payment.amount) }}</td>
+          <td class="text-muted small">{{ payment.payment_method or '—' }}</td>
+          <td><span class="badge badge-{{ payment.status }}">{{ payment.status }}</span></td>
+          <td class="text-muted small">{{ payment.payment_date.strftime('%d/%m/%Y') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" class="text-center py-5 text-muted">No hay pagos registrados</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if payments.pages > 1 %}
+  <div class="card-footer d-flex justify-content-center py-2">
+    <nav><ul class="pagination pagination-sm mb-0">
+      {% for p in payments.iter_pages() %}
+        {% if p %}
+          <li class="page-item {% if p == payments.page %}active{% endif %}">
+            <a class="page-link" href="?page={{ p }}&status={{ status }}&month={{ month }}&year={{ year }}">{{ p }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul></nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Novedades - Autos Colombia{% endblock %}
+{% block page_title %}Novedades{% endblock %}
+{% block topbar_actions %}
+<a href="{{ url_for('incidents.new') }}" class="btn btn-primary btn-sm">
+  <i class="bi bi-plus-lg me-1"></i>Registrar Novedad
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body py-2 px-3">
+    <form class="row g-2 align-items-end" method="get">
+      <div class="col-md-4">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Todos los estados</option>
+          <option value="open"     {% if status=='open'     %}selected{% endif %}>Abierto</option>
+          <option value="resolved" {% if status=='resolved' %}selected{% endif %}>Resuelto</option>
+          <option value="closed"   {% if status=='closed'   %}selected{% endif %}>Cerrado</option>
+        </select>
+      </div>
+      <div class="col-md-4">
+        <select name="severity" class="form-select form-select-sm">
+          <option value="">Todas las severidades</option>
+          <option value="low"    {% if severity=='low'    %}selected{% endif %}>Baja</option>
+          <option value="medium" {% if severity=='medium' %}selected{% endif %}>Media</option>
+          <option value="high"   {% if severity=='high'   %}selected{% endif %}>Alta</option>
+        </select>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-primary btn-sm w-100"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+        <a href="{{ url_for('incidents.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th class="ps-4">Título</th>
+          <th>Vehículo</th>
+          <th>Severidad</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for incident, vehicle in incidents.items %}
+        <tr>
+          <td class="ps-4 fw-semibold small">{{ incident.title }}</td>
+          <td class="small text-muted">{{ vehicle.plate }}</td>
+          <td>
+            {% if incident.severity == 'high' %}
+              <span class="badge bg-danger">Alta</span>
+            {% elif incident.severity == 'medium' %}
+              <span class="badge bg-warning text-dark">Media</span>
+            {% else %}
+              <span class="badge bg-secondary">Baja</span>
+            {% endif %}
+          </td>
+          <td>
+            <span class="badge badge-{{ incident.status }}">
+              {{ 'Abierto' if incident.status == 'open' else 'Resuelto' }}
+            </span>
+          </td>
+          <td class="small text-muted">{{ incident.created_at.strftime('%d/%m/%Y') }}</td>
+          <td class="text-end pe-3 d-flex gap-1 justify-content-end">
+            <a href="{{ url_for('incidents.detail', incident_id=incident.id) }}"
+               class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
+            {% if incident.status == 'open' %}
+            <form action="{{ url_for('incidents.resolve', incident_id=incident.id) }}" method="post">
+              <button class="btn btn-sm btn-outline-success" title="Marcar como resuelto">
+                <i class="bi bi-check-lg"></i>
+              </button>
+            </form>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center py-5 text-muted">No hay novedades registradas</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if incidents.pages > 1 %}
+  <div class="card-footer d-flex justify-content-center py-2">
+    <nav><ul class="pagination pagination-sm mb-0">
+      {% for p in incidents.iter_pages() %}
+        {% if p %}
+          <li class="page-item {% if p == incidents.page %}active{% endif %}">
+            <a class="page-link" href="?page={{ p }}&status={{ status }}&severity={{ severity }}">{{ p }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul></nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

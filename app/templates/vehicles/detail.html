@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}{{ vehicle.plate }} - Autos Colombia{% endblock %}
+{% block page_title %}Vehículo {{ vehicle.plate }}{% endblock %}
+{% block topbar_actions %}
+<a href="{{ url_for('vehicles.edit', vehicle_id=vehicle.id) }}" class="btn btn-outline-primary btn-sm">
+  <i class="bi bi-pencil me-1"></i>Editar
+</a>
+<form action="{{ url_for('vehicles.deactivate', vehicle_id=vehicle.id) }}" method="post" class="d-inline"
+      onsubmit="return confirm('¿Desactivar este vehículo?')">
+  <button class="btn btn-outline-danger btn-sm"><i class="bi bi-trash me-1"></i>Desactivar</button>
+</form>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-car-front me-2"></i>Información</div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-5 text-muted small">Placa</dt>
+          <dd class="col-7 fw-bold">{{ vehicle.plate }}</dd>
+          <dt class="col-5 text-muted small">Marca</dt>
+          <dd class="col-7">{{ vehicle.brand }}</dd>
+          <dt class="col-5 text-muted small">Modelo</dt>
+          <dd class="col-7">{{ vehicle.model }}</dd>
+          <dt class="col-5 text-muted small">Año</dt>
+          <dd class="col-7">{{ vehicle.year or '—' }}</dd>
+          <dt class="col-5 text-muted small">Color</dt>
+          <dd class="col-7">{{ vehicle.color or '—' }}</dd>
+          <dt class="col-5 text-muted small">Tipo</dt>
+          <dd class="col-7">{{ vehicle.vehicle_type }}</dd>
+          <dt class="col-5 text-muted small">Celda</dt>
+          <dd class="col-7">
+            {% if vehicle.cell %}
+              <span class="badge badge-occupied">{{ vehicle.cell.number }}</span>
+            {% else %}—{% endif %}
+          </dd>
+          <dt class="col-5 text-muted small">Propietario</dt>
+          <dd class="col-7">
+            <a href="{{ url_for('users.detail', user_id=vehicle.owner.id) }}">{{ vehicle.owner.full_name }}</a>
+          </dd>
+          <dt class="col-5 text-muted small">Registrado</dt>
+          <dd class="col-7 small">{{ vehicle.registered_at.strftime('%d/%m/%Y') }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header py-3 px-4"><i class="bi bi-arrow-left-right me-2"></i>Últimos Movimientos</div>
+      <div class="card-body p-0">
+        <table class="table table-sm table-hover mb-0">
+          <thead><tr><th class="ps-3">Tipo</th><th>Fecha / Hora</th><th>Notas</th></tr></thead>
+          <tbody>
+            {% for m in vehicle.movements[-10:]|reverse %}
+            <tr>
+              <td class="ps-3">
+                {% if m.movement_type == 'entry' %}
+                  <span class="badge badge-entry">Entrada</span>
+                {% else %}
+                  <span class="badge badge-exit">Salida</span>
+                {% endif %}
+              </td>
+              <td class="small text-muted">{{ m.timestamp.strftime('%d/%m/%Y %H:%M') }}</td>
+              <td class="small text-muted">{{ m.notes or '—' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="text-center py-3 text-muted">Sin movimientos</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-exclamation-triangle me-2"></i>Novedades</div>
+      <div class="card-body p-0">
+        <table class="table table-sm table-hover mb-0">
+          <thead><tr><th class="ps-3">Título</th><th>Severidad</th><th>Estado</th><th>Fecha</th></tr></thead>
+          <tbody>
+            {% for i in vehicle.incidents %}
+            <tr>
+              <td class="ps-3 small">{{ i.title }}</td>
+              <td><span class="badge bg-secondary">{{ i.severity }}</span></td>
+              <td>
+                {% if i.status == 'open' %}<span class="badge badge-open">Abierto</span>
+                {% else %}<span class="badge badge-resolved">Resuelto</span>{% endif %}
+              </td>
+              <td class="small text-muted">{{ i.created_at.strftime('%d/%m/%Y') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center py-3 text-muted">Sin novedades</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

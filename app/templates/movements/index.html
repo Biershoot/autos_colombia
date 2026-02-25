@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Movimientos - Autos Colombia{% endblock %}
+{% block page_title %}Entradas y Salidas{% endblock %}
+{% block topbar_actions %}
+<a href="{{ url_for('movements.register') }}" class="btn btn-primary btn-sm">
+  <i class="bi bi-plus-lg me-1"></i>Registrar Movimiento
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3">
+  <div class="card-body py-2 px-3">
+    <form class="row g-2 align-items-end" method="get">
+      <div class="col-md-4">
+        <label class="form-label mb-1">Tipo</label>
+        <select name="type" class="form-select form-select-sm">
+          <option value="">Todos</option>
+          <option value="entry" {% if movement_type == 'entry' %}selected{% endif %}>Entrada</option>
+          <option value="exit"  {% if movement_type == 'exit'  %}selected{% endif %}>Salida</option>
+        </select>
+      </div>
+      <div class="col-md-5">
+        <label class="form-label mb-1">Placa</label>
+        <input type="text" name="plate" class="form-control form-control-sm" placeholder="Buscar placa..." value="{{ plate }}">
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button class="btn btn-primary btn-sm w-100"><i class="bi bi-search me-1"></i>Filtrar</button>
+        <a href="{{ url_for('movements.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body p-0">
+    <table class="table table-hover mb-0">
+      <thead>
+        <tr>
+          <th class="ps-4">#</th>
+          <th>Placa</th>
+          <th>Vehículo</th>
+          <th>Tipo</th>
+          <th>Fecha / Hora</th>
+          <th>Notas</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for movement, vehicle in movements.items %}
+        <tr>
+          <td class="ps-4 text-muted small">{{ movement.id }}</td>
+          <td class="fw-semibold">{{ vehicle.plate }}</td>
+          <td class="text-muted small">{{ vehicle.brand }} {{ vehicle.model }}</td>
+          <td>
+            {% if movement.movement_type == 'entry' %}
+              <span class="badge badge-entry"><i class="bi bi-box-arrow-in-right me-1"></i>Entrada</span>
+            {% else %}
+              <span class="badge badge-exit"><i class="bi bi-box-arrow-right me-1"></i>Salida</span>
+            {% endif %}
+          </td>
+          <td class="text-muted small">{{ movement.timestamp.strftime('%d/%m/%Y %H:%M:%S') }}</td>
+          <td class="text-muted small">{{ movement.notes or '—' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center py-5 text-muted">No hay movimientos registrados</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if movements.pages > 1 %}
+  <div class="card-footer d-flex justify-content-center py-2">
+    <nav><ul class="pagination pagination-sm mb-0">
+      {% for p in movements.iter_pages() %}
+        {% if p %}
+          <li class="page-item {% if p == movements.page %}active{% endif %}">
+            <a class="page-link" href="?page={{ p }}&type={{ movement_type }}&plate={{ plate }}">{{ p }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        {% endif %}
+      {% endfor %}
+    </ul></nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

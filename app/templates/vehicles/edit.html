@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Editar {{ vehicle.plate }} - Autos Colombia{% endblock %}
+{% block page_title %}Editar Vehículo{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-pencil me-2"></i>Editar {{ vehicle.plate }}</div>
+      <div class="card-body p-4">
+        <form method="post">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Tipo</label>
+              <select name="vehicle_type" class="form-select" required>
+                <option value="car"        {% if vehicle.vehicle_type=='car'        %}selected{% endif %}>🚗 Carro</option>
+                <option value="motorcycle" {% if vehicle.vehicle_type=='motorcycle' %}selected{% endif %}>🏍️ Motocicleta</option>
+                <option value="truck"      {% if vehicle.vehicle_type=='truck'      %}selected{% endif %}>🚛 Camión</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Marca</label>
+              <input type="text" name="brand" class="form-control" value="{{ vehicle.brand }}" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Modelo</label>
+              <input type="text" name="model" class="form-control" value="{{ vehicle.model }}" required>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Año</label>
+              <input type="number" name="year" class="form-control" value="{{ vehicle.year or '' }}">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Color</label>
+              <input type="text" name="color" class="form-control" value="{{ vehicle.color or '' }}">
+            </div>
+            <div class="col-12">
+              <label class="form-label">Celda Asignada</label>
+              <select name="cell_id" class="form-select">
+                <option value="">Sin celda</option>
+                {% for cell in cells %}
+                <option value="{{ cell.id }}" {% if vehicle.cell_id == cell.id %}selected{% endif %}>
+                  {{ cell.number }} — {{ cell.cell_type }} (Piso {{ cell.floor }}) — ${{ "{:,.0f}".format(cell.monthly_fee) }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Guardar Cambios
+            </button>
+            <a href="{{ url_for('vehicles.detail', vehicle_id=vehicle.id) }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

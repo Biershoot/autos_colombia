@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Registrar Pago - Autos Colombia{% endblock %}
+{% block page_title %}Registrar Pago{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header py-3 px-4"><i class="bi bi-credit-card me-2"></i>Datos del Pago</div>
+      <div class="card-body p-4">
+        <form method="post" id="payment-form">
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label">Usuario <span class="text-danger">*</span></label>
+              <select name="user_id" id="user_id" class="form-select" required>
+                <option value="">Seleccionar usuario...</option>
+                {% for user in users %}
+                <option value="{{ user.id }}">{{ user.full_name }} — {{ user.document }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Vehículo</label>
+              <select name="vehicle_id" id="vehicle_id" class="form-select">
+                <option value="">Seleccione un usuario primero</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Mes <span class="text-danger">*</span></label>
+              <select name="period_month" class="form-select" required>
+                {% for m in range(1,13) %}
+                <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>
+                  {{ ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                       'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'][m-1] }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Año <span class="text-danger">*</span></label>
+              <input type="number" name="period_year" class="form-control"
+                     value="{{ current_year }}" required min="2020" max="2030">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Monto (COP) <span class="text-danger">*</span></label>
+              <input type="number" name="amount" id="amount" class="form-control"
+                     required min="0" step="1000" placeholder="Ej: 150000">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Método de Pago</label>
+              <select name="payment_method" class="form-select">
+                <option value="">Seleccionar...</option>
+                <option value="cash">Efectivo</option>
+                <option value="transfer">Transferencia</option>
+                <option value="card">Tarjeta</option>
+                <option value="nequi">Nequi</option>
+                <option value="daviplata">Daviplata</option>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary flex-fill">
+              <i class="bi bi-check-lg me-1"></i>Registrar Pago
+            </button>
+            <a href="{{ url_for('payments.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('user_id').addEventListener('change', function() {
+  const userId = this.value;
+  const vehicleSelect = document.getElementById('vehicle_id');
+  vehicleSelect.innerHTML = '<option value="">Cargando...</option>';
+  if (!userId) {
+    vehicleSelect.innerHTML = '<option value="">Seleccione un usuario primero</option>';
+    return;
+  }
+  fetch(`/payments/get_vehicles/${userId}`)
+    .then(r => r.json())
+    .then(data => {
+      vehicleSelect.innerHTML = '<option value="">Sin vehículo específico</option>';
+      data.forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.id;
+        opt.textContent = `${v.plate} — Tarifa: $${v.fee.toLocaleString('es-CO')}`;
+        opt.dataset.fee = v.fee;
+        vehicleSelect.appendChild(opt);
+      });
+    });
+});
+
+document.getElementById('vehicle_id').addEventListener('change', function() {
+  const selected = this.options[this.selectedIndex];
+  if (selected && selected.dataset.fee) {
+    document.getElementById('amount').value = selected.dataset.fee;
+  }
+});
+</script>
+{% endblock %}

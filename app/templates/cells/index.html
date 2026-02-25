@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Celdas - Autos Colombia{% endblock %}
+{% block page_title %}Celdas{% endblock %}
+{% block topbar_actions %}
+<a href="{{ url_for('cells.new') }}" class="btn btn-primary btn-sm">
+  <i class="bi bi-plus-lg me-1"></i>Nueva Celda
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3 mb-3">
+  <div class="col-md-4">
+    <div class="stat-card text-center">
+      <div class="fs-2 fw-bold">{{ stats.total }}</div>
+      <div class="text-muted small">Total Celdas</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card text-center">
+      <div class="fs-2 fw-bold text-success">{{ stats.available }}</div>
+      <div class="text-muted small">Disponibles</div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="stat-card text-center">
+      <div class="fs-2 fw-bold text-warning">{{ stats.occupied }}</div>
+      <div class="text-muted small">Ocupadas</div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body py-2 px-3">
+    <form class="row g-2 align-items-end" method="get">
+      <div class="col-md-3">
+        <select name="type" class="form-select form-select-sm">
+          <option value="">Todos los tipos</option>
+          <option value="car"        {% if cell_type=='car'        %}selected{% endif %}>Carro</option>
+          <option value="motorcycle" {% if cell_type=='motorcycle' %}selected{% endif %}>Moto</option>
+          <option value="truck"      {% if cell_type=='truck'      %}selected{% endif %}>Camión</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <select name="status" class="form-select form-select-sm">
+          <option value="">Todos los estados</option>
+          <option value="available" {% if status=='available' %}selected{% endif %}>Disponible</option>
+          <option value="occupied"  {% if status=='occupied'  %}selected{% endif %}>Ocupada</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select name="floor" class="form-select form-select-sm">
+          <option value="">Todos los pisos</option>
+          {% for f in [1,2,3] %}
+          <option value="{{ f }}" {% if floor|string == f|string %}selected{% endif %}>Piso {{ f }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4 d-flex gap-2">
+        <button class="btn btn-primary btn-sm w-100"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+        <a href="{{ url_for('cells.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-2">
+  {% for cell in cells %}
+  <div class="col-6 col-md-4 col-lg-3 col-xl-2">
+    <div class="card p-2 text-center h-100" style="border-color: {% if cell.status == 'available' %}#86efac{% else %}#fcd34d{% endif %}">
+      <div class="fw-bold fs-5">{{ cell.number }}</div>
+      <div class="text-muted" style="font-size:0.75rem">
+        {% if cell.cell_type == 'car' %}🚗{% elif cell.cell_type == 'motorcycle' %}🏍️{% else %}🚛{% endif %}
+        Piso {{ cell.floor }}
+      </div>
+      <span class="badge mt-1 badge-{{ cell.status }}">
+        {{ 'Disponible' if cell.status == 'available' else 'Ocupada' }}
+      </span>
+      <div class="text-muted mt-1" style="font-size:0.7rem">${{ "{:,.0f}".format(cell.monthly_fee) }}</div>
+      <a href="{{ url_for('cells.edit', cell_id=cell.id) }}" class="btn btn-sm btn-outline-secondary mt-2 py-0">
+        <i class="bi bi-pencil"></i>
+      </a>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12 text-center py-5 text-muted">No hay celdas que coincidan con los filtros</div>
+  {% endfor %}
+</div>
+{% endblock %}

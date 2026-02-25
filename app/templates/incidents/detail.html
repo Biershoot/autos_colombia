@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Novedad #{{ incident.id }} - Autos Colombia{% endblock %}
+{% block page_title %}Novedad #{{ incident.id }}{% endblock %}
+{% block topbar_actions %}
+{% if incident.status == 'open' %}
+<form action="{{ url_for('incidents.resolve', incident_id=incident.id) }}" method="post">
+  <button class="btn btn-success btn-sm"><i class="bi bi-check-lg me-1"></i>Marcar Resuelta</button>
+</form>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card">
+      <div class="card-header py-3 px-4 d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-exclamation-triangle me-2"></i>{{ incident.title }}</span>
+        {% if incident.severity == 'high' %}
+          <span class="badge bg-danger">Alta</span>
+        {% elif incident.severity == 'medium' %}
+          <span class="badge bg-warning text-dark">Media</span>
+        {% else %}
+          <span class="badge bg-secondary">Baja</span>
+        {% endif %}
+      </div>
+      <div class="card-body p-4">
+        <div class="mb-3">
+          <label class="form-label text-muted small">Descripción</label>
+          <p class="mb-0">{{ incident.description }}</p>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-6">
+            <div class="text-muted small">Vehículo</div>
+            <div class="fw-semibold">
+              <a href="{{ url_for('vehicles.detail', vehicle_id=incident.vehicle.id) }}">{{ incident.vehicle.plate }}</a>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="text-muted small">Estado</div>
+            <span class="badge badge-{{ incident.status }} mt-1">
+              {{ 'Abierto' if incident.status == 'open' else 'Resuelto' }}
+            </span>
+          </div>
+          <div class="col-6 mt-3">
+            <div class="text-muted small">Registrada</div>
+            <div>{{ incident.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+          </div>
+          {% if incident.resolved_at %}
+          <div class="col-6 mt-3">
+            <div class="text-muted small">Resuelta</div>
+            <div>{{ incident.resolved_at.strftime('%d/%m/%Y %H:%M') }}</div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

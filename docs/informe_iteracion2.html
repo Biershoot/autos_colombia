@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Iteración 2 — Parqueadero Autos Colombia</title>
+<style>
+  /* ── FUENTES Y RESET ── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    color: #1a1a2e;
+    background: #fff;
+  }
+
+  /* ── COLORES DE MARCA ── */
+  :root {
+    --primary:  #1a3a6b;
+    --accent:   #e8a020;
+    --light:    #f0f4f8;
+    --border:   #cdd5e0;
+    --success:  #1e7a4a;
+    --tag-bg:   #e8f0fb;
+    --tag-color:#1a3a6b;
+  }
+
+  /* ── UTILIDADES ── */
+  .badge {
+    display: inline-block; padding: 2px 10px; border-radius: 12px;
+    font-size: 9pt; font-weight: 600; letter-spacing: .3px;
+  }
+  .badge-alta   { background:#fde8e8; color:#b91c1c; }
+  .badge-media  { background:#fef3c7; color:#92400e; }
+  .badge-baja   { background:#d1fae5; color:#065f46; }
+  .badge-rf     { background:var(--tag-bg); color:var(--tag-color); }
+  .badge-hu     { background:#f3e8ff; color:#6b21a8; }
+
+  /* ── PÁGINA ── */
+  @page { size: A4; margin: 2cm 2.2cm 2cm 2.2cm; }
+
+  /* ── PORTADA ── */
+  .cover {
+    page-break-after: always;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+  }
+  .cover-top {
+    background: var(--primary);
+    color: #fff;
+    padding: 40px 50px 30px;
+    text-align: center;
+  }
+  .cover-top .institution {
+    font-size: 12pt; font-weight: 300; letter-spacing: 1px;
+    text-transform: uppercase; opacity: .85; margin-bottom: 4px;
+  }
+  .cover-top .course {
+    font-size: 10pt; opacity: .7; margin-bottom: 20px;
+  }
+  .cover-logo {
+    font-size: 48pt; margin: 10px 0;
+  }
+  .cover-title {
+    background: var(--accent);
+    color: #fff;
+    padding: 28px 50px;
+    text-align: center;
+  }
+  .cover-title h1 {
+    font-size: 22pt; font-weight: 700; line-height: 1.3;
+    text-transform: uppercase; letter-spacing: .5px;
+  }
+  .cover-title h2 {
+    font-size: 14pt; font-weight: 400; margin-top: 8px; opacity: .9;
+  }
+  .cover-body {
+    padding: 30px 50px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+  }
+  .cover-info-row {
+    display: flex; border-bottom: 1px solid var(--border); padding: 8px 0;
+  }
+  .cover-info-row .label {
+    font-weight: 600; color: var(--primary); width: 180px; flex-shrink: 0;
+    font-size: 10pt; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .cover-info-row .value {
+    color: #333; font-size: 10.5pt;
+  }
+  .cover-footer {
+    background: var(--primary);
+    color: rgba(255,255,255,.6);
+    padding: 14px 50px;
+    font-size: 9pt;
+    text-align: center;
+    letter-spacing: .5px;
+  }
+
+  /* ── TABLA DE CONTENIDO ── */
+  .toc-page {
+    page-break-after: always;
+    padding: 20px 0;
+  }
+  .toc-page h2 {
+    font-size: 16pt; color: var(--primary); border-bottom: 3px solid var(--accent);
+    padding-bottom: 8px; margin-bottom: 24px;
+  }
+  .toc-list { list-style: none; }
+  .toc-list li {
+    display: flex; align-items: center; padding: 5px 0;
+    border-bottom: 1px dotted var(--border); font-size: 10.5pt;
+  }
+  .toc-list li .toc-num {
+    background: var(--primary); color: #fff; width: 28px; height: 28px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 9pt; font-weight: 700; flex-shrink: 0; margin-right: 12px;
+  }
+  .toc-list li .toc-title { flex: 1; }
+  .toc-list li.toc-h2 .toc-num { background: var(--accent); width: 22px; height: 22px; font-size: 8pt; margin-left: 20px; }
+
+  /* ── SECCIONES ── */
+  .section {
+    page-break-before: always;
+    padding-top: 10px;
+  }
+  .section:first-of-type { page-break-before: avoid; }
+
+  /* ── ENCABEZADOS ── */
+  h1.sec-title {
+    font-size: 18pt; color: var(--primary); text-transform: uppercase;
+    border-left: 6px solid var(--accent); padding-left: 14px;
+    margin-bottom: 20px; letter-spacing: .3px;
+  }
+  h2.sub-title {
+    font-size: 13pt; color: var(--primary); margin: 24px 0 12px;
+    border-bottom: 2px solid var(--border); padding-bottom: 6px;
+  }
+  h3.sub-sub {
+    font-size: 11pt; color: #2c4a6e; margin: 18px 0 8px;
+    font-weight: 600;
+  }
+  h4.card-title {
+    font-size: 10.5pt; font-weight: 700; color: var(--primary);
+    margin-bottom: 6px;
+  }
+
+  /* ── PÁRRAFOS ── */
+  p { margin-bottom: 10px; text-align: justify; }
+
+  /* ── LISTAS ── */
+  ul, ol { margin: 8px 0 12px 22px; }
+  li { margin-bottom: 4px; }
+
+  /* ── TARJETAS DE REQUERIMIENTO ── */
+  .req-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--primary);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    page-break-inside: avoid;
+  }
+  .req-card.rnf { border-left-color: var(--accent); }
+  .req-card-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .req-id {
+    background: var(--primary); color: #fff;
+    padding: 3px 10px; border-radius: 4px; font-size: 9pt; font-weight: 700;
+  }
+  .req-card.rnf .req-id { background: var(--accent); }
+  .req-name { font-weight: 600; font-size: 11pt; color: var(--primary); }
+  .req-field { margin: 5px 0; font-size: 10pt; }
+  .req-field strong { color: #2c4a6e; }
+
+  /* ── TARJETAS DE HISTORIA ── */
+  .hu-card {
+    background: #fafbff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 16px 0;
+    page-break-inside: avoid;
+  }
+  .hu-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .hu-id-block { display: flex; flex-direction: column; gap: 4px; }
+  .hu-id { background: #6b21a8; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 9pt; font-weight: 700; display: inline-block; }
+  .hu-title { font-size: 12pt; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .hu-story { background: var(--light); border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 10pt; line-height: 1.7; }
+  .hu-story .como { color: #6b21a8; font-weight: 600; }
+  .hu-story .quiero { color: #1e7a4a; font-weight: 600; }
+  .hu-story .para { color: #92400e; font-weight: 600; }
+  .criteria-list { list-style: none; padding: 0; margin: 0; }
+  .criteria-list li {
+    padding: 4px 0 4px 24px;
+    position: relative;
+    font-size: 10pt;
+    border-bottom: 1px dotted #e5e7eb;
+  }
+  .criteria-list li::before {
+    content: '☐';
+    position: absolute; left: 0; color: var(--primary);
+  }
+  .hu-meta { display: flex; gap: 16px; margin-top: 10px; font-size: 9.5pt; color: #555; }
+
+  /* ── TABLAS ── */
+  table {
+    width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 9.5pt;
+    page-break-inside: avoid;
+  }
+  th {
+    background: var(--primary); color: #fff; padding: 8px 10px;
+    text-align: left; font-weight: 600; font-size: 9pt;
+  }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--light); }
+  tr:hover td { background: #e8f0fb; }
+  .td-id { font-weight: 700; color: var(--primary); white-space: nowrap; }
+
+  /* ── CASO DE PRUEBA ── */
+  .cp-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 16px 0;
+    overflow: hidden;
+    page-break-inside: avoid;
+  }
+  .cp-header {
+    background: var(--primary); color: #fff;
+    padding: 8px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cp-id { font-weight: 700; font-size: 10pt; background: var(--accent); padding: 2px 8px; border-radius: 4px; color: #fff; }
+  .cp-name { font-size: 10pt; }
+  .cp-table { width: 100%; border-collapse: collapse; }
+  .cp-table tr:nth-child(even) td { background: var(--light); }
+  .cp-table td { padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 9.5pt; vertical-align: top; }
+  .cp-table td:first-child { font-weight: 600; color: var(--primary); width: 160px; }
+  .estado-cell { display: flex; gap: 10px; }
+  .estado-btn {
+    border: 1.5px solid var(--border); border-radius: 4px;
+    padding: 2px 10px; font-size: 8.5pt; color: #555;
+  }
+
+  /* ── DIAGRAMA PLACEHOLDER ── */
+  .diagram-placeholder {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 30px;
+    text-align: center;
+    background: var(--light);
+    margin: 16px 0;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .diagram-placeholder .ph-icon { font-size: 32pt; opacity: .4; }
+  .diagram-placeholder .ph-title { font-size: 11pt; font-weight: 700; color: var(--primary); }
+  .diagram-placeholder .ph-hint { font-size: 9pt; color: #888; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: #e8f0fb;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 6px 6px 0;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 10pt;
+  }
+  .info-box strong { color: var(--primary); }
+
+  /* ── URL BOX ── */
+  .url-box {
+    background: #1a1a2e;
+    color: #7dd3fc;
+    font-family: 'Courier New', monospace;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 10pt;
+    margin: 10px 0;
+    word-break: break-all;
+  }
+
+  /* ── MÓDULO HEADER ── */
+  .module-header {
+    background: linear-gradient(135deg, var(--primary) 0%, #2c4a6e 100%);
+    color: #fff;
+    padding: 14px 20px;
+    border-radius: 8px;
+    margin: 20px 0 16px;
+  }
+  .module-header h3 { font-size: 12pt; font-weight: 700; margin: 0; }
+  .module-header p { font-size: 9.5pt; opacity: .8; margin: 4px 0 0; }
+
+  /* ── SUMMARY GRID ── */
+  .summary-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0;
+  }
+  .summary-card {
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px; text-align: center; background: var(--light);
+  }
+  .summary-card .s-num { font-size: 20pt; font-weight: 700; color: var(--primary); }
+  .summary-card .s-label { font-size: 8.5pt; color: #666; margin-top: 4px; }
+
+  /* ── CONCLUSIONES ── */
+  .conclusion-item {
+    display: flex; gap: 14px; margin: 14px 0; align-items: flex-start;
+  }
+  .conclusion-num {
+    background: var(--accent); color: #fff; border-radius: 50%;
+    width: 28px; height: 28px; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 11pt;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── PRINT ── */
+  @media print {
+    body { font-size: 10pt; }
+    .section { page-break-before: always; }
+    .cover { page-break-after: always; }
+    .toc-page { page-break-after: always; }
+    .no-break { page-break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════
+     PORTADA
+════════════════════════════════════════════════ -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="institution">Ingeniería de Software y Datos</div>
+    <div class="course">Asignatura: Análisis y Diseño de Software</div>
+    <div class="cover-logo">🏢</div>
+  </div>
+
+  <div class="cover-title">
+    <h1>Sistema de Gestión Operativa<br>Parqueadero Autos Colombia</h1>
+    <h2>Iteración 2 — Gestión de Usuarios y Gestión de Celdas</h2>
+  </div>
+
+  <div class="cover-body">
+    <div class="cover-info-row">
+      <span class="label">Proyecto</span>
+      <span class="value">Parqueadero Autos Colombia — Sistema Web de Gestión</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Iteración</span>
+      <span class="value">Iteración 2 de 3</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Módulos cubiertos</span>
+      <span class="value">Gestión de Usuarios · Gestión de Celdas</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Tecnologías</span>
+      <span class="value">Python · Flask · SQLAlchemy · Bootstrap 5 · SQLite</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Repositorio</span>
+      <span class="value">https://github.com/Biershoot/autos_colombia</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Fecha</span>
+      <span class="value">Marzo 2026</span>
+    </div>
+    <div class="cover-info-row">
+      <span class="label">Versión del documento</span>
+      <span class="value">1.2</span>
+    </div>
+  </div>
+
+  <div class="cover-footer">
+    Documento de Análisis y Diseño — Uso Académico
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     TABLA DE CONTENIDO
+════════════════════════════════════════════════ -->
+<div class="toc-page">
+  <h2>Tabla de Contenido</h2>
+  <ul class="toc-list">
+    <li><span class="toc-num">1</span><span class="toc-title">Introducción</span></li>
+    <li><span class="toc-num">2</span><span class="toc-title">Entregables — Iteración 2</span></li>
+    <li class="toc-h2"><span class="toc-num">2.1</span><span class="toc-title">Requerimientos Funcionales — Gestión de Usuarios</span></li>
+    <li class="toc-h2"><span class="toc-num">2.2</span><span class="toc-title">Requerimientos Funcionales — Gestión de Celdas</span></li>
+    <li class="toc-h2"><span class="toc-num">2.3</span><span class="toc-title">Requerimientos No Funcionales</span></li>
+    <li class="toc-h2"><span class="toc-num">2.4</span><span class="toc-title">Diagramas de Casos de Uso (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.5</span><span class="toc-title">Historias de Usuario</span></li>
+    <li class="toc-h2"><span class="toc-num">2.6</span><span class="toc-title">Mockups de Interfaces (Figma)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.7</span><span class="toc-title">Diagramas de Secuencia — Iteraciones 1 y 2 (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.8</span><span class="toc-title">Diagrama de Componentes — Iteraciones 1 y 2 (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.9</span><span class="toc-title">Plan de Pruebas Resumido</span></li>
+    <li class="toc-h2"><span class="toc-num">2.10</span><span class="toc-title">Repositorio GitHub y Video YouTube</span></li>
+    <li><span class="toc-num">3</span><span class="toc-title">Conclusiones</span></li>
+  </ul>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     1. INTRODUCCIÓN
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">1. Introducción</h1>
+
+  <p>
+    El presente documento corresponde al informe de la <strong>Iteración 2</strong> del proyecto de desarrollo del sistema de información para el parqueadero <strong>Autos Colombia</strong>, desarrollado en el marco de la asignatura de Ingeniería de Software y Datos. Esta iteración se enfoca en la construcción y documentación de los módulos de <strong>Gestión de Usuarios</strong> y <strong>Gestión de Celdas</strong>, que complementan la Iteración 1 (gestión de entradas y salidas de vehículos).
+  </p>
+
+  <p>
+    El parqueadero Autos Colombia opera bajo un modelo de mensualidad fija, donde cada cliente registra uno o más vehículos y se le asigna una celda específica dentro de las instalaciones. El sistema web reemplaza los registros manuales en papel, brindando control en tiempo real del flujo vehicular, la ocupación del parqueadero y el estado de cartera de cada cliente. La solución está desarrollada sobre el stack <strong>Python + Flask + SQLAlchemy + Bootstrap 5</strong>, siguiendo el patrón de arquitectura MVC.
+  </p>
+
+  <h2 class="sub-title">Contexto del Proyecto</h2>
+  <p>
+    El sistema se desarrolla en tres iteraciones. La primera iteración cubrió el registro de entradas y salidas de vehículos, la gestión de pagos, novedades y el dashboard de métricas. Esta segunda iteración profundiza en la gestión integral de usuarios (clientes del servicio) y de las celdas (espacios físicos del parqueadero), incluyendo todos los artefactos de análisis, diseño y pruebas que evidencian un desarrollo de software estructurado y de calidad.
+  </p>
+
+  <h2 class="sub-title">Objetivos de la Iteración 2</h2>
+  <ul>
+    <li>Definir y documentar los requerimientos funcionales y no funcionales para la gestión de usuarios y celdas.</li>
+    <li>Elaborar los diagramas UML de casos de uso, secuencia y componentes correspondientes.</li>
+    <li>Construir las historias de usuario con criterios de aceptación verificables.</li>
+    <li>Diseñar los mockups de las interfaces de usuario para los módulos en cuestión.</li>
+    <li>Establecer un plan de pruebas resumido con casos de prueba trazables a los requerimientos.</li>
+    <li>Actualizar el repositorio GitHub con el código fuente y la documentación generada.</li>
+  </ul>
+
+  <h2 class="sub-title">Alcance de la Iteración 2</h2>
+  <table>
+    <tr>
+      <th>Módulo</th>
+      <th>Funcionalidades incluidas</th>
+      <th>Estado</th>
+    </tr>
+    <tr>
+      <td>Gestión de Usuarios</td>
+      <td>Registrar, buscar, ver perfil, editar, desactivar/reactivar clientes</td>
+      <td>✅ Implementado</td>
+    </tr>
+    <tr>
+      <td>Gestión de Celdas</td>
+      <td>Crear, editar, visualizar panel, filtrar, asignar y liberar celdas</td>
+      <td>✅ Implementado</td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2. ENTREGABLES
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2. Entregables</h1>
+
+  <!-- ── 2.1 RF Usuarios ── -->
+  <h2 class="sub-title">2.1 Requerimientos Funcionales — Gestión de Usuarios</h2>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-10</span>
+      <span class="req-name">Registrar Usuario</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir registrar un nuevo cliente que contrata el servicio de mensualidad.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Flujo principal:</strong>
+      <ol style="margin-top:6px;">
+        <li>El administrador accede al módulo de Usuarios.</li>
+        <li>Selecciona la opción "Nuevo Usuario".</li>
+        <li>Ingresa: nombre completo, número de documento, teléfono, correo y dirección.</li>
+        <li>El sistema valida que el documento y el correo no estén registrados previamente.</li>
+        <li>El sistema guarda el usuario con estado activo y fecha de creación automática.</li>
+      </ol>
+    </div>
+    <div class="req-field"><strong>Postcondición:</strong> El usuario queda registrado con estado activo.</div>
+    <div class="req-field"><strong>Flujo alternativo A:</strong> Si el documento ya existe → <em>"El número de documento ya se encuentra registrado."</em></div>
+    <div class="req-field"><strong>Flujo alternativo B:</strong> Si el correo ya existe → <em>"El correo electrónico ya se encuentra registrado."</em></div>
+    <div class="req-field"><strong>Restricciones:</strong> Nombre (3–100 car.), Documento (solo dígitos, 6–15), Correo (formato válido), Teléfono (máx. 15 dígitos).</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-11</span>
+      <span class="req-name">Consultar y Buscar Usuarios</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir consultar el listado de usuarios con búsqueda por nombre, documento o correo, y paginación.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Funcionalidades:</strong> Lista paginada de usuarios activos · Filtro en tiempo real · Ordenamiento ascendente por nombre.</div>
+    <div class="req-field"><strong>Regla de negocio:</strong> Los usuarios inactivos no aparecen en el listado principal.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-12</span>
+      <span class="req-name">Ver Perfil Detallado de Usuario</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe mostrar el perfil completo de un usuario con sus vehículos y pagos asociados.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Información mostrada:</strong> Datos personales · Estado y fecha de registro · Vehículos (placa, marca/modelo, celda) · Últimos pagos (período, monto, método).</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-13</span>
+      <span class="req-name">Editar Información de Usuario</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir actualizar los datos de un usuario existente.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Campos editables:</strong> Nombre completo · Teléfono · Correo electrónico · Dirección.</div>
+    <div class="req-field"><strong>Restricción:</strong> El número de documento no puede ser modificado una vez registrado.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-14</span>
+      <span class="req-name">Desactivar Usuario</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir desactivar a un usuario sin eliminarlo físicamente de la base de datos.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Flujo principal:</strong> El administrador accede al perfil → selecciona "Desactivar" → confirma → el usuario pasa a estado inactivo.</div>
+    <div class="req-field"><strong>Flujo alternativo:</strong> Si el usuario tiene vehículos activos, el sistema muestra advertencia.</div>
+    <div class="req-field"><strong>Regla de negocio:</strong> El historial se conserva íntegro. Los usuarios desactivados pueden ser reactivados.</div>
+  </div>
+
+  <!-- ── 2.2 RF Celdas ── -->
+  <h2 class="sub-title" style="page-break-before:always;">2.2 Requerimientos Funcionales — Gestión de Celdas</h2>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-15</span>
+      <span class="req-name">Crear Celda</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir registrar una nueva celda de parqueadero.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Datos requeridos:</strong> Número de celda (único) · Tipo de vehículo (carro/moto/camión) · Piso · Tarifa mensual (COP).</div>
+    <div class="req-field"><strong>Postcondición:</strong> La celda queda con estado "disponible" por defecto.</div>
+    <div class="req-field"><strong>Flujo alternativo:</strong> Si el número ya existe → <em>"El número de celda ya está registrado."</em></div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-16</span>
+      <span class="req-name">Editar Información de Celda</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir actualizar los datos de una celda existente.</div>
+    <div class="req-field"><strong>Campos editables:</strong> Tipo de vehículo · Piso · Tarifa mensual.</div>
+    <div class="req-field"><strong>Restricción:</strong> El número de celda no puede ser modificado una vez creado.</div>
+    <div class="req-field"><strong>Regla de negocio:</strong> Si la celda está ocupada, el cambio de tarifa aplica desde el siguiente período.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-17</span>
+      <span class="req-name">Consultar y Filtrar Celdas</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir consultar todas las celdas en vista de cuadrícula con filtros.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador / Operador</div>
+    <div class="req-field"><strong>Funcionalidades:</strong> Vista grid · Color verde = disponible · Color amarillo = ocupada · Filtros por tipo, estado y piso · Estadísticas de ocupación en la parte superior.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header">
+      <span class="req-id">RF-18</span>
+      <span class="req-name">Ver Estadísticas de Ocupación</span>
+    </div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe presentar métricas de ocupación de celdas en tiempo real.</div>
+    <div class="req-field"><strong>Indicadores:</strong> Total de celdas · Disponibles (total y %) · Ocupadas (total y %) · Desglose por tipo · Capacidad por piso.</div>
+  </div>
+
+  <!-- ── 2.3 RNF ── -->
+  <h2 class="sub-title" style="page-break-before:always;">2.3 Requerimientos No Funcionales</h2>
+
+  <table>
+    <tr>
+      <th style="width:90px;">ID</th>
+      <th style="width:160px;">Nombre</th>
+      <th>Descripción</th>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-09</td>
+      <td>Rendimiento</td>
+      <td>El listado de usuarios carga en &lt;1.5 s con 500 usuarios. El panel de celdas renderiza en &lt;1 s con 200 celdas.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-10</td>
+      <td>Usabilidad</td>
+      <td>Formularios completables en &lt;2 min. Mensajes de validación claros junto al campo con error. Campos obligatorios marcados visualmente con asterisco.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-11</td>
+      <td>Integridad Usuarios</td>
+      <td>No pueden existir dos usuarios con el mismo documento ni correo. La eliminación es lógica (cambio de estado), nunca física. Historial preservado íntegramente.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-12</td>
+      <td>Integridad Celdas</td>
+      <td>No puede haber celdas con número duplicado. Una celda ocupada no puede asignarse a otro vehículo sin liberarla primero. El estado se actualiza automáticamente.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-13</td>
+      <td>Consistencia Visual</td>
+      <td>Celdas disponibles: verde #198754. Celdas ocupadas: amarillo #ffc107. Vista responsiva desde 768px.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-14</td>
+      <td>Trazabilidad</td>
+      <td>El sistema registra fecha de creación de cada usuario. Los cambios de estado de celda son rastreables vía movimientos/vehículos.</td>
+    </tr>
+    <tr>
+      <td class="td-id">RNF-15</td>
+      <td>Accesibilidad</td>
+      <td>Etiquetas label correctamente asociadas a campos. Contraste de colores cumple nivel AA de las WCAG 2.1.</td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.4 CASOS DE USO
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.4 Diagramas de Casos de Uso</h1>
+  <p>Los siguientes diagramas fueron elaborados en <strong>StarUML</strong> siguiendo el estándar UML 2.5. Se presentan dos diagramas: uno para el módulo de Gestión de Usuarios y otro para el módulo de Gestión de Celdas.</p>
+
+  <div class="module-header">
+    <h3>CU-02 — Gestión de Usuarios</h3>
+    <p>Actores: Administrador · Sistema (validaciones automáticas)</p>
+  </div>
+
+  <div class="diagram-placeholder">
+    <div class="ph-icon">📊</div>
+    <div class="ph-title">Diagrama de Casos de Uso — Gestión de Usuarios</div>
+    <div class="ph-hint">Insertar captura de pantalla del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Casos de uso: Registrar Usuario · Buscar Usuario · Ver Perfil · Editar Usuario · Desactivar Usuario · Reactivar Usuario</div>
+    <div class="ph-hint">Relaciones include: Registrar → Validar Unicidad · Editar → Validar Correo · Desactivar → Verificar Vehículos Activos</div>
+  </div>
+
+  <table>
+    <tr><th>Caso de Uso</th><th>Actor</th><th>Tipo</th><th>RF Asociado</th></tr>
+    <tr><td>Registrar Usuario</td><td>Administrador</td><td>Primario</td><td>RF-10</td></tr>
+    <tr><td>Validar Unicidad Documento/Correo</td><td>Sistema</td><td>«include»</td><td>RF-10</td></tr>
+    <tr><td>Buscar Usuario</td><td>Administrador</td><td>Primario</td><td>RF-11</td></tr>
+    <tr><td>Ver Perfil de Usuario</td><td>Administrador</td><td>Primario</td><td>RF-12</td></tr>
+    <tr><td>Editar Usuario</td><td>Administrador</td><td>Primario</td><td>RF-13</td></tr>
+    <tr><td>Validar Correo Único</td><td>Sistema</td><td>«include»</td><td>RF-13</td></tr>
+    <tr><td>Desactivar Usuario</td><td>Administrador</td><td>Primario</td><td>RF-14</td></tr>
+    <tr><td>Verificar Vehículos Activos</td><td>Sistema</td><td>«include»</td><td>RF-14</td></tr>
+    <tr><td>Reactivar Usuario</td><td>Administrador</td><td>«extend»</td><td>RF-14</td></tr>
+  </table>
+
+  <div class="module-header" style="page-break-before:always;">
+    <h3>CU-03 — Gestión de Celdas</h3>
+    <p>Actores: Administrador · Operador · Sistema (automatismos de estado)</p>
+  </div>
+
+  <div class="diagram-placeholder">
+    <div class="ph-icon">📊</div>
+    <div class="ph-title">Diagrama de Casos de Uso — Gestión de Celdas</div>
+    <div class="ph-hint">Insertar captura de pantalla del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Casos de uso: Crear Celda · Editar Celda · Visualizar Panel · Filtrar Celdas · Asignar Celda · Liberar Celda</div>
+    <div class="ph-hint">Relaciones include: Crear → Validar Número Único · Asignar → Verificar Disponibilidad</div>
+  </div>
+
+  <table>
+    <tr><th>Caso de Uso</th><th>Actor</th><th>Tipo</th><th>RF Asociado</th></tr>
+    <tr><td>Crear Celda</td><td>Administrador</td><td>Primario</td><td>RF-15</td></tr>
+    <tr><td>Validar Número Único</td><td>Sistema</td><td>«include»</td><td>RF-15</td></tr>
+    <tr><td>Editar Celda</td><td>Administrador</td><td>Primario</td><td>RF-16</td></tr>
+    <tr><td>Visualizar Panel de Celdas</td><td>Administrador, Operador</td><td>Primario</td><td>RF-17</td></tr>
+    <tr><td>Filtrar Celdas</td><td>Administrador, Operador</td><td>Primario</td><td>RF-17</td></tr>
+    <tr><td>Asignar Celda a Vehículo</td><td>Administrador</td><td>Primario</td><td>RF-17</td></tr>
+    <tr><td>Verificar Disponibilidad</td><td>Sistema</td><td>«include»</td><td>RF-17</td></tr>
+    <tr><td>Liberar Celda</td><td>Sistema</td><td>«extend»</td><td>RF-17</td></tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.5 HISTORIAS DE USUARIO
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.5 Historias de Usuario</h1>
+
+  <div class="summary-grid">
+    <div class="summary-card"><div class="s-num">8</div><div class="s-label">Historias Iteración 2</div></div>
+    <div class="summary-card"><div class="s-num">18</div><div class="s-label">Puntos de Historia</div></div>
+    <div class="summary-card"><div class="s-num">4</div><div class="s-label">HU Usuarios</div></div>
+    <div class="summary-card"><div class="s-num">4</div><div class="s-label">HU Celdas</div></div>
+  </div>
+
+  <div class="module-header">
+    <h3>Módulo: Gestión de Usuarios</h3>
+  </div>
+
+  <!-- HU-10 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-10</span>
+        <span class="hu-title">Buscar y Consultar Usuarios</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> buscar usuarios por nombre, documento o correo,<br>
+      <span class="para">para</span> encontrar rápidamente el perfil de un cliente sin recorrer toda la lista.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El sistema muestra una lista paginada de todos los usuarios activos al ingresar al módulo.</li>
+      <li>El campo de búsqueda filtra en tiempo real por nombre completo, documento o correo.</li>
+      <li>Cada fila muestra: nombre, documento, correo, teléfono y estado.</li>
+      <li>Si no hay resultados: "No se encontraron usuarios con ese criterio."</li>
+      <li>La lista soporta hasta 500 usuarios sin exceder 1.5 s de carga.</li>
+    </ul>
+  </div>
+
+  <!-- HU-11 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-11</span>
+        <span class="hu-title">Ver Perfil Detallado de Usuario</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> ver toda la información de un cliente en una sola pantalla,<br>
+      <span class="para">para</span> conocer sus vehículos, celdas asignadas e historial de pagos sin navegar por múltiples módulos.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El perfil muestra: nombre, documento, correo, teléfono, dirección, estado y fecha de registro.</li>
+      <li>Muestra la lista de vehículos con placa, marca/modelo, tipo y celda asignada.</li>
+      <li>Muestra los últimos 5 pagos con período, monto y método de pago.</li>
+      <li>Desde el perfil hay botones directos: "Editar" y "Desactivar".</li>
+    </ul>
+  </div>
+
+  <!-- HU-12 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-12</span>
+        <span class="hu-title">Editar Información de Usuario</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> actualizar los datos de contacto de un cliente,<br>
+      <span class="para">para</span> mantener la información del sistema al día ante cambios de teléfono, correo o dirección.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El formulario viene pre-cargado con los datos actuales del usuario.</li>
+      <li>Campos editables: nombre completo, teléfono, correo y dirección.</li>
+      <li>El número de documento aparece como campo de solo lectura (readonly).</li>
+      <li>El sistema valida que el correo nuevo no esté en uso por otro usuario.</li>
+      <li>Al guardar: "Usuario actualizado correctamente."</li>
+    </ul>
+  </div>
+
+  <!-- HU-13 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-13</span>
+        <span class="hu-title">Desactivar Usuario</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">3 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> desactivar a un cliente que ya no usa el servicio,<br>
+      <span class="para">para</span> retirar sus accesos sin perder el historial histórico de pagos y vehículos.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>La opción "Desactivar" está disponible en el perfil del usuario activo.</li>
+      <li>El sistema solicita confirmación antes de ejecutar la acción.</li>
+      <li>Al confirmar, el usuario pasa a inactivo y desaparece del listado principal.</li>
+      <li>Los vehículos, pagos y movimientos asociados se conservan íntegramente.</li>
+      <li>Si tiene vehículos activos, muestra advertencia antes de proceder.</li>
+      <li>Un usuario inactivo puede ser reactivado desde su perfil.</li>
+    </ul>
+  </div>
+
+  <div class="module-header" style="page-break-before:always;">
+    <h3>Módulo: Gestión de Celdas</h3>
+  </div>
+
+  <!-- HU-14 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-14</span>
+        <span class="hu-title">Crear Nueva Celda</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> registrar una nueva celda en el sistema,<br>
+      <span class="para">para</span> habilitar nuevos espacios cuando el parqueadero amplíe su capacidad.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El formulario solicita: número de celda, tipo (carro/moto/camión), piso y tarifa mensual.</li>
+      <li>El número de celda debe ser único en el sistema.</li>
+      <li>Al crear, el estado inicial es "disponible" automáticamente.</li>
+      <li>La tarifa debe ser un valor positivo mayor a cero en COP.</li>
+      <li>Al guardar: "Celda creada exitosamente."</li>
+    </ul>
+  </div>
+
+  <!-- HU-15 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-15</span>
+        <span class="hu-title">Editar Celda</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-media">Media</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> actualizar los datos de una celda existente,<br>
+      <span class="para">para</span> corregir errores de registro o ajustar las tarifas mensuales.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El formulario viene pre-cargado con los datos actuales de la celda.</li>
+      <li>Campos editables: tipo de vehículo, piso y tarifa mensual.</li>
+      <li>El número de celda aparece como campo de solo lectura (readonly).</li>
+      <li>Al guardar: "Celda actualizada correctamente."</li>
+    </ul>
+  </div>
+
+  <!-- HU-16 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-16</span>
+        <span class="hu-title">Visualizar y Filtrar Celdas</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">2 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> operador del parqueadero,<br>
+      <span class="quiero">quiero</span> ver el estado de todas las celdas en un panel visual con filtros,<br>
+      <span class="para">para</span> identificar rápidamente cuáles están disponibles y asignarlas a nuevos clientes.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El sistema muestra todas las celdas en formato de cuadrícula (grid card).</li>
+      <li>Celdas disponibles: fondo verde · Celdas ocupadas: fondo amarillo.</li>
+      <li>Cada tarjeta muestra: número, ícono del tipo, piso y tarifa mensual.</li>
+      <li>Filtros simultáneos por: tipo, estado y piso.</li>
+      <li>Estadísticas en la parte superior: Total, Disponibles y Ocupadas.</li>
+    </ul>
+  </div>
+
+  <!-- HU-17 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div class="hu-id-block">
+        <span class="hu-id">HU-17</span>
+        <span class="hu-title">Asignar Celda Disponible a Vehículo</span>
+      </div>
+      <div style="text-align:right;">
+        <span class="badge badge-alta">Alta</span><br>
+        <small style="color:#888;">3 puntos</small>
+      </div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> que al registrar un vehículo solo se puedan seleccionar celdas disponibles del tipo correcto,<br>
+      <span class="para">para</span> evitar asignaciones incorrectas y garantizar que cada celda tenga máximo un vehículo.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El selector de celdas muestra únicamente celdas con estado "disponible".</li>
+      <li>Al guardar el vehículo, la celda asignada cambia automáticamente a "ocupada".</li>
+      <li>Si no hay celdas disponibles del tipo requerido: "No hay celdas disponibles para este tipo de vehículo."</li>
+      <li>Al desactivar un vehículo, la celda vuelve automáticamente a "disponible".</li>
+    </ul>
+  </div>
+
+  <!-- Tabla resumen -->
+  <h2 class="sub-title">Resumen de Estimación — Iteración 2</h2>
+  <table>
+    <tr><th>ID</th><th>Descripción</th><th>Módulo</th><th>Puntos</th><th>Prioridad</th></tr>
+    <tr><td class="td-id">HU-10</td><td>Buscar y consultar usuarios</td><td>Usuarios</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-11</td><td>Ver perfil detallado de usuario</td><td>Usuarios</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-12</td><td>Editar información de usuario</td><td>Usuarios</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-13</td><td>Desactivar usuario</td><td>Usuarios</td><td>3</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-14</td><td>Crear nueva celda</td><td>Celdas</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-15</td><td>Editar celda</td><td>Celdas</td><td>2</td><td><span class="badge badge-media">Media</span></td></tr>
+    <tr><td class="td-id">HU-16</td><td>Visualizar y filtrar celdas</td><td>Celdas</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-17</td><td>Asignar celda disponible a vehículo</td><td>Celdas</td><td>3</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr style="font-weight:700;background:#e8f0fb;">
+      <td colspan="3" style="text-align:right;font-weight:700;">Total Iteración 2</td>
+      <td>18</td><td></td>
+    </tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.6 MOCKUPS
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.6 Mockups de Interfaces (Figma)</h1>
+  <p>Los mockups fueron diseñados siguiendo los lineamientos visuales del sistema (Bootstrap 5, paleta de colores institucional) para las pantallas nuevas de la Iteración 2. Se presentan cinco pantallas principales.</p>
+
+  <h2 class="sub-title">M-06 — Lista de Usuarios</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Lista de Usuarios</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Componentes: Topbar · Sidebar · Barra de búsqueda · Tabla paginada de usuarios · Botón "+ Nuevo Usuario"</div>
+  </div>
+
+  <h2 class="sub-title">M-07 — Crear / Editar Usuario</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Formulario Crear/Editar Usuario</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Campos: Nombre completo · Número de documento (readonly en edición) · Correo · Teléfono · Dirección · Botones Cancelar / Guardar</div>
+  </div>
+
+  <h2 class="sub-title">M-08 — Perfil de Usuario</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Perfil de Usuario</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Secciones: Datos personales · Lista de vehículos · Últimos pagos · Botones Editar / Desactivar</div>
+  </div>
+
+  <h2 class="sub-title">M-09 — Panel de Celdas (Grid)</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Panel Visual de Celdas</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Componentes: 3 tarjetas de estadísticas · Filtros tipo/estado/piso · Grid de tarjetas (verde=disponible, amarillo=ocupada)</div>
+  </div>
+
+  <h2 class="sub-title">M-10 — Crear / Editar Celda</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Formulario Crear/Editar Celda</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Campos: Número de celda (readonly en edición) · Tipo de vehículo (selector) · Piso · Tarifa mensual · Botones Cancelar / Guardar</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.7 DIAGRAMAS DE SECUENCIA
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.7 Diagramas de Secuencia — Iteraciones 1 y 2</h1>
+  <p>Los diagramas de secuencia modelan los flujos de interacción entre el usuario, los controladores Flask (Blueprints), los modelos SQLAlchemy y la base de datos. Se presentan 7 diagramas correspondientes a los casos de uso más relevantes de ambas iteraciones.</p>
+
+  <h2 class="sub-title">Iteración 1 — Gestión de Entradas y Salidas</h2>
+
+  <h3 class="sub-sub">DS-01 — Registrar Entrada de Vehículo</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Registrar Entrada</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Operador · MovimientosController · Vehicle · Movement · Cell · Database</div>
+    <div class="ph-hint">Incluye fragmento combinado «alt» para el caso de entrada duplicada</div>
+  </div>
+
+  <h3 class="sub-sub">DS-02 — Registrar Salida de Vehículo</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Registrar Salida</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Operador · MovimientosController · Vehicle · Movement · Cell · Database</div>
+    <div class="ph-hint">Incluye fragmento combinado «alt» para el caso de salida sin entrada previa</div>
+  </div>
+
+  <h2 class="sub-title" style="page-break-before:always;">Iteración 2 — Gestión de Usuarios</h2>
+
+  <h3 class="sub-sub">DS-03 — Registrar Nuevo Usuario</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Registrar Usuario</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · UsersController · UserForm · User · Database</div>
+    <div class="ph-hint">Incluye flujo alternativo para documento/correo duplicado</div>
+  </div>
+
+  <h3 class="sub-sub">DS-04 — Editar Usuario</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Editar Usuario</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · UsersController · UserForm · User · Database</div>
+  </div>
+
+  <h3 class="sub-sub">DS-05 — Desactivar Usuario</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Desactivar Usuario</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · UsersController · User · Vehicle · Database</div>
+    <div class="ph-hint">Incluye flujo alternativo para usuario con vehículos activos</div>
+  </div>
+
+  <h2 class="sub-title">Iteración 2 — Gestión de Celdas</h2>
+
+  <h3 class="sub-sub">DS-06 — Crear Celda</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Crear Celda</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · CellsController · CellForm · Cell · Database</div>
+    <div class="ph-hint">Incluye flujo alternativo para número de celda duplicado</div>
+  </div>
+
+  <h3 class="sub-sub">DS-07 — Editar Celda</h3>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Editar Celda</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · CellsController · CellForm · Cell · Database</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.8 DIAGRAMA DE COMPONENTES
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.8 Diagrama de Componentes — Iteraciones 1 y 2</h1>
+  <p>El diagrama de componentes modela la arquitectura del sistema completo cubriendo los módulos implementados en las Iteraciones 1 y 2. Se distinguen cuatro capas: Presentación, Control, Modelo y Datos.</p>
+
+  <div class="diagram-placeholder" style="min-height:280px;">
+    <div class="ph-icon">🧩</div>
+    <div class="ph-title">Diagrama de Componentes — Sistema Parqueadero Autos Colombia</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Capa Presentación: base.html · templates de users, cells, vehicles, payments, movements, incidents</div>
+    <div class="ph-hint">Capa Control (Blueprints): main.py · users.py · cells.py · vehicles.py · payments.py · movements.py · incidents.py</div>
+    <div class="ph-hint">Capa Modelo (ORM): User · Vehicle · Cell · Movement · Payment · Incident</div>
+    <div class="ph-hint">Capa Datos: SQLite (desarrollo) · PostgreSQL (producción)</div>
+  </div>
+
+  <h2 class="sub-title">Interfaces entre Componentes</h2>
+  <table>
+    <tr><th>Componente Proveedor</th><th>Interfaz</th><th>Componente Consumidor</th></tr>
+    <tr><td>users.py</td><td>«interface» IUsuarios</td><td>main.py (Dashboard)</td></tr>
+    <tr><td>cells.py</td><td>«interface» ICeldas</td><td>main.py (Dashboard)</td></tr>
+    <tr><td>cells.py</td><td>«interface» ICeldas</td><td>vehicles.py</td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>movements.py</td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>incidents.py</td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>payments.py</td></tr>
+    <tr><td>users.py</td><td>«interface» IUsuarios</td><td>payments.py</td></tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.9 PLAN DE PRUEBAS
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.9 Plan de Pruebas Resumido</h1>
+
+  <div class="info-box">
+    <strong>Objetivo:</strong> Verificar que los módulos de Gestión de Usuarios y Gestión de Celdas cumplen con los RF-10 al RF-18 y las historias HU-10 a HU-17, garantizando la calidad antes de la entrega.
+  </div>
+
+  <h2 class="sub-title">Tipos de Prueba</h2>
+  <table>
+    <tr><th>Tipo</th><th>Descripción</th></tr>
+    <tr><td>Pruebas Funcionales</td><td>Verifican el cumplimiento de los requerimientos funcionales.</td></tr>
+    <tr><td>Pruebas de Validación</td><td>Verifican reglas de negocio y restricciones de datos.</td></tr>
+    <tr><td>Pruebas de Flujo</td><td>Verifican flujos positivos (happy path) y negativos (sad path).</td></tr>
+    <tr><td>Pruebas de Interfaz</td><td>Verifican que los mensajes y la UI respondan correctamente.</td></tr>
+  </table>
+
+  <h2 class="sub-title" style="page-break-before:always;">Casos de Prueba — Módulo: Gestión de Usuarios</h2>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U01</span><span class="cp-name">Registrar usuario con datos válidos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-04, RF-10</td></tr>
+      <tr><td>Precondición</td><td>No existe usuario con el mismo documento ni correo.</td></tr>
+      <tr><td>Datos de entrada</td><td>Nombre: "Juan Carlos Pérez", Documento: "12345678", Correo: "juan@correo.com", Teléfono: "3001234567"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Usuarios → Nuevo Usuario. 2. Ingresar los datos. 3. Clic en "Guardar Usuario".</td></tr>
+      <tr><td>Resultado esperado</td><td>Usuario creado con estado activo. Mensaje: "Usuario creado exitosamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U02</span><span class="cp-name">Registrar usuario con documento duplicado</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-10 (flujo alternativo A)</td></tr>
+      <tr><td>Precondición</td><td>Existe un usuario con documento "12345678".</td></tr>
+      <tr><td>Datos de entrada</td><td>Documento: "12345678", demás datos diferentes y válidos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Usuarios → Nuevo Usuario. 2. Ingresar el documento ya existente. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error: "El número de documento ya se encuentra registrado." El usuario NO es creado.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U03</span><span class="cp-name">Registrar usuario con correo duplicado</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-10 (flujo alternativo B)</td></tr>
+      <tr><td>Precondición</td><td>Existe un usuario con correo "juan@correo.com".</td></tr>
+      <tr><td>Datos de entrada</td><td>Correo: "juan@correo.com", demás datos diferentes y válidos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Usuarios → Nuevo Usuario. 2. Ingresar el correo ya existente. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error: "El correo electrónico ya se encuentra registrado." El usuario NO es creado.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U04</span><span class="cp-name">Registrar usuario con campos vacíos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-10, RNF-10</td></tr>
+      <tr><td>Precondición</td><td>Ninguna.</td></tr>
+      <tr><td>Datos de entrada</td><td>Todos los campos vacíos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Usuarios → Nuevo Usuario. 2. No ingresar ningún dato. 3. Clic en "Guardar".</td></tr>
+      <tr><td>Resultado esperado</td><td>Mensajes de validación en los campos obligatorios. El formulario NO se envía.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U05</span><span class="cp-name">Buscar usuario por nombre</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-10, RF-11</td></tr>
+      <tr><td>Precondición</td><td>Existe usuario de nombre "María López".</td></tr>
+      <tr><td>Datos de entrada</td><td>Término de búsqueda: "María"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al módulo de Usuarios. 2. Escribir "María" en el campo de búsqueda.</td></tr>
+      <tr><td>Resultado esperado</td><td>La lista muestra únicamente usuarios cuyo nombre contenga "María".</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U06</span><span class="cp-name">Buscar usuario con criterio sin resultados</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-10, RF-11</td></tr>
+      <tr><td>Datos de entrada</td><td>Término de búsqueda: "XXXXXXXX" (inexistente)</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Usuarios. 2. Escribir "XXXXXXXX" en la búsqueda.</td></tr>
+      <tr><td>Resultado esperado</td><td>Mensaje: "No se encontraron usuarios con ese criterio."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U07</span><span class="cp-name">Editar datos de usuario</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-12, RF-13</td></tr>
+      <tr><td>Precondición</td><td>Existe un usuario activo.</td></tr>
+      <tr><td>Datos de entrada</td><td>Nuevo teléfono: "3109876543", nueva dirección: "Av. Siempre Viva #742"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al perfil del usuario. 2. Clic en "Editar". 3. Modificar teléfono y dirección. 4. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Datos actualizados en el perfil. Mensaje: "Usuario actualizado correctamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U08</span><span class="cp-name">Verificar que el documento es readonly en edición</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-13 (restricción)</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al perfil del usuario. 2. Clic en "Editar". 3. Intentar modificar el campo Documento.</td></tr>
+      <tr><td>Resultado esperado</td><td>El campo "Número de Documento" está deshabilitado y no puede ser modificado.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U09</span><span class="cp-name">Desactivar usuario sin vehículos activos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-13, RF-14</td></tr>
+      <tr><td>Precondición</td><td>Existe un usuario activo sin vehículos activos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al perfil del usuario. 2. Clic en "Desactivar". 3. Confirmar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Usuario pasa a inactivo. Desaparece del listado. Mensaje: "El usuario ha sido desactivado exitosamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-U10</span><span class="cp-name">Desactivar usuario con vehículos activos (flujo alternativo)</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-13, RF-14 (flujo alternativo)</td></tr>
+      <tr><td>Precondición</td><td>Existe un usuario activo con al menos un vehículo activo.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al perfil del usuario. 2. Clic en "Desactivar".</td></tr>
+      <tr><td>Resultado esperado</td><td>El sistema muestra advertencia: usuario tiene vehículos activos. No desactiva hasta que se desactiven primero.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <h2 class="sub-title" style="page-break-before:always;">Casos de Prueba — Módulo: Gestión de Celdas</h2>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C01</span><span class="cp-name">Crear celda con datos válidos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-14, RF-15</td></tr>
+      <tr><td>Datos de entrada</td><td>Número: "3001", Tipo: "carro", Piso: 3, Tarifa: 150,000 COP</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas → Nueva Celda. 2. Ingresar los datos. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Celda creada con estado "disponible". Aparece en el panel. Mensaje: "Celda creada exitosamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C02</span><span class="cp-name">Crear celda con número duplicado</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-15 (flujo alternativo)</td></tr>
+      <tr><td>Precondición</td><td>Existe una celda con número "1001".</td></tr>
+      <tr><td>Datos de entrada</td><td>Número: "1001", demás datos válidos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas → Nueva Celda. 2. Ingresar número "1001". 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error: "El número de celda ya está registrado." La celda NO es creada.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C03</span><span class="cp-name">Crear celda con tarifa negativa o cero</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-15, RNF-12</td></tr>
+      <tr><td>Datos de entrada</td><td>Tarifa: -50,000 o 0</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas → Nueva Celda. 2. Ingresar tarifa negativa. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error de validación. La celda NO es creada.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C04</span><span class="cp-name">Editar tarifa de celda disponible</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-15, RF-16</td></tr>
+      <tr><td>Datos de entrada</td><td>Nueva tarifa: 175,000 COP</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas. 2. Seleccionar celda. 3. Editar. 4. Cambiar tarifa. 5. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Celda con tarifa $175,000. Mensaje: "Celda actualizada correctamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C05</span><span class="cp-name">Verificar que el número de celda es readonly en edición</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-16 (restricción)</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas. 2. Seleccionar celda. 3. Editar. 4. Intentar modificar el número.</td></tr>
+      <tr><td>Resultado esperado</td><td>El campo "Número de Celda" está deshabilitado y no puede ser modificado.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C06</span><span class="cp-name">Visualizar panel de celdas</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-16, RF-17</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al módulo de Celdas.</td></tr>
+      <tr><td>Resultado esperado</td><td>Todas las celdas en grid. Disponibles en verde, ocupadas en amarillo. 3 tarjetas de estadísticas visibles.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C07</span><span class="cp-name">Filtrar celdas por tipo</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-16, RF-17</td></tr>
+      <tr><td>Datos de entrada</td><td>Filtro tipo: "moto"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas. 2. Seleccionar filtro Tipo: Moto.</td></tr>
+      <tr><td>Resultado esperado</td><td>El panel muestra únicamente celdas de tipo "moto".</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C08</span><span class="cp-name">Filtrar celdas por estado disponible</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-16, RF-17</td></tr>
+      <tr><td>Datos de entrada</td><td>Filtro estado: "disponible"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Celdas. 2. Seleccionar filtro Estado: Disponible.</td></tr>
+      <tr><td>Resultado esperado</td><td>Solo celdas con fondo verde (estado disponible) son mostradas.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C09</span><span class="cp-name">Estado de celda cambia al registrar vehículo</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-17, RF-17, RNF-12</td></tr>
+      <tr><td>Precondición</td><td>Celda "1005" con estado "disponible".</td></tr>
+      <tr><td>Pasos</td><td>1. Registrar vehículo nuevo asignando la celda "1005". 2. Guardar. 3. Verificar celda en el panel.</td></tr>
+      <tr><td>Resultado esperado</td><td>La celda "1005" aparece con estado "ocupada" (fondo amarillo).</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-C10</span><span class="cp-name">Estado de celda vuelve a disponible al desactivar vehículo</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-17, RNF-12</td></tr>
+      <tr><td>Precondición</td><td>Vehículo activo asignado a la celda "1005" (estado: ocupada).</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al detalle del vehículo. 2. Desactivar el vehículo. 3. Verificar celda "1005".</td></tr>
+      <tr><td>Resultado esperado</td><td>La celda "1005" vuelve a estado "disponible" (fondo verde) automáticamente.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <h2 class="sub-title">Matriz de Trazabilidad</h2>
+  <table>
+    <tr><th>Caso de Prueba</th><th>Historia de Usuario</th><th>Req. Funcional</th><th>Req. No Funcional</th></tr>
+    <tr><td class="td-id">CP-U01</td><td>HU-04, HU-10</td><td>RF-10</td><td>RNF-10</td></tr>
+    <tr><td class="td-id">CP-U02</td><td>HU-04</td><td>RF-10</td><td>RNF-11</td></tr>
+    <tr><td class="td-id">CP-U03</td><td>HU-04</td><td>RF-10</td><td>RNF-11</td></tr>
+    <tr><td class="td-id">CP-U04</td><td>HU-10</td><td>RF-10</td><td>RNF-10</td></tr>
+    <tr><td class="td-id">CP-U05</td><td>HU-10</td><td>RF-11</td><td>RNF-09</td></tr>
+    <tr><td class="td-id">CP-U06</td><td>HU-10</td><td>RF-11</td><td>RNF-10</td></tr>
+    <tr><td class="td-id">CP-U07</td><td>HU-12</td><td>RF-13</td><td>RNF-14</td></tr>
+    <tr><td class="td-id">CP-U08</td><td>HU-12</td><td>RF-13</td><td>—</td></tr>
+    <tr><td class="td-id">CP-U09</td><td>HU-13</td><td>RF-14</td><td>RNF-11</td></tr>
+    <tr><td class="td-id">CP-U10</td><td>HU-13</td><td>RF-14</td><td>RNF-11</td></tr>
+    <tr><td class="td-id">CP-C01</td><td>HU-14</td><td>RF-15</td><td>RNF-12</td></tr>
+    <tr><td class="td-id">CP-C02</td><td>HU-14</td><td>RF-15</td><td>RNF-12</td></tr>
+    <tr><td class="td-id">CP-C03</td><td>HU-14</td><td>RF-15</td><td>RNF-12</td></tr>
+    <tr><td class="td-id">CP-C04</td><td>HU-15</td><td>RF-16</td><td>—</td></tr>
+    <tr><td class="td-id">CP-C05</td><td>HU-15</td><td>RF-16</td><td>—</td></tr>
+    <tr><td class="td-id">CP-C06</td><td>HU-16</td><td>RF-17</td><td>RNF-13, RNF-09</td></tr>
+    <tr><td class="td-id">CP-C07</td><td>HU-16</td><td>RF-17</td><td>RNF-13</td></tr>
+    <tr><td class="td-id">CP-C08</td><td>HU-16</td><td>RF-17</td><td>RNF-13</td></tr>
+    <tr><td class="td-id">CP-C09</td><td>HU-17</td><td>RF-17</td><td>RNF-12</td></tr>
+    <tr><td class="td-id">CP-C10</td><td>HU-17</td><td>RF-17</td><td>RNF-12</td></tr>
+  </table>
+
+  <h2 class="sub-title">Criterios de Aceptación del Plan</h2>
+  <table>
+    <tr><th>Criterio</th><th>Condición de Éxito</th></tr>
+    <tr><td>Casos de prueba ejecutados</td><td>100% ejecutados</td></tr>
+    <tr><td>Casos de prueba aprobados</td><td>≥ 90% aprobados</td></tr>
+    <tr><td>Defectos críticos sin resolver</td><td>0 defectos de severidad Alta</td></tr>
+    <tr><td>Tiempo de respuesta — listado de usuarios</td><td>&lt; 1.5 segundos</td></tr>
+    <tr><td>Tiempo de respuesta — panel de celdas</td><td>&lt; 1 segundo</td></tr>
+  </table>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     2.10 REPOSITORIO Y VIDEO
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">2.10 Repositorio GitHub y Video YouTube</h1>
+
+  <h2 class="sub-title">Repositorio de Código Fuente</h2>
+  <p>El código fuente del proyecto se encuentra alojado y versionado en GitHub. El repositorio incluye el código de la aplicación Flask, la base de datos, los scripts SQL y toda la documentación generada en las Iteraciones 1 y 2.</p>
+
+  <div class="url-box">
+    🔗 https://github.com/Biershoot/autos_colombia
+  </div>
+
+  <table>
+    <tr><th>Elemento</th><th>Descripción</th></tr>
+    <tr><td>Rama principal</td><td>main</td></tr>
+    <tr><td>Último commit Iteración 2</td><td>docs: agregar documentación completa Iteración 2</td></tr>
+    <tr><td>Archivos nuevos</td><td>docs/requerimientos_it2.md · docs/historias_it2.md · docs/diagramas_it2.md · docs/plan_de_pruebas_it2.md</td></tr>
+    <tr><td>Tecnologías</td><td>Python 3.10+ · Flask 3.0.0 · SQLAlchemy · Bootstrap 5</td></tr>
+  </table>
+
+  <h2 class="sub-title">Video Demostrativo en YouTube</h2>
+  <p>El siguiente video muestra el funcionamiento completo del sistema de información Parqueadero Autos Colombia, demostrando las funcionalidades implementadas en las Iteraciones 1 y 2: registro de entradas/salidas, gestión de usuarios y gestión de celdas.</p>
+
+  <div class="diagram-placeholder">
+    <div class="ph-icon">▶️</div>
+    <div class="ph-title">Video Demostrativo — Parqueadero Autos Colombia</div>
+    <div class="ph-hint">Insertar URL del video publicado en YouTube</div>
+    <div class="ph-hint">Ejemplo: https://www.youtube.com/watch?v=XXXXXXXXXX</div>
+    <div class="ph-hint">El video debe mostrar: dashboard · entradas y salidas · gestión de usuarios · gestión de celdas</div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     3. CONCLUSIONES
+════════════════════════════════════════════════ -->
+<div class="section">
+  <h1 class="sec-title">3. Conclusiones</h1>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">1</div>
+    <p>La <strong>Iteración 2</strong> del sistema Parqueadero Autos Colombia consolidó la gestión integral de los dos activos fundamentales del negocio: los usuarios (clientes con contrato de mensualidad) y las celdas (espacios físicos del parqueadero). La implementación de operaciones CRUD completas para ambos módulos, con validaciones de integridad a nivel de base de datos y de capa de negocio, garantiza la consistencia y confiabilidad de la información operativa.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">2</div>
+    <p>La definición de <strong>9 requerimientos funcionales</strong> (RF-10 a RF-18) y <strong>7 requerimientos no funcionales</strong> (RNF-09 a RNF-15) proporcionó una base sólida y trazable para el desarrollo. Cada funcionalidad implementada puede rastrearse desde la historia de usuario hasta el caso de prueba correspondiente, lo que demuestra una práctica de ingeniería de software disciplinada y orientada a la calidad.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">3</div>
+    <p>Los <strong>diagramas UML</strong> elaborados (casos de uso, secuencia y componentes) aportaron una visión clara de la arquitectura del sistema y los flujos de interacción. El diagrama de componentes en particular evidencia la correcta separación de responsabilidades entre las capas de presentación, control, modelo y datos, siguiendo el patrón MVC que facilita el mantenimiento y la escalabilidad futura del sistema.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">4</div>
+    <p>Las <strong>8 historias de usuario</strong> (HU-10 a HU-17, totalizando 18 puntos de historia) con criterios de aceptación verificables facilitaron la comunicación entre el equipo técnico y los requerimientos del negocio. El acumulado del proyecto alcanza 40 puntos de historia en 17 historias entre las dos iteraciones, reflejando un alcance bien dimensionado para el contexto operativo del parqueadero.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">5</div>
+    <p>El <strong>plan de pruebas</strong> con 20 casos de prueba organizados por módulo, incluyendo flujos positivos y negativos, y la matriz de trazabilidad RF–HU–RNF, constituyen una herramienta práctica para validar la calidad del software antes de su entrega. El enfoque de eliminación lógica (soft delete) para usuarios, combinado con la actualización automática de estado de celdas al registrar vehículos, garantiza la integridad referencial y la trazabilidad histórica de todas las operaciones.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">6</div>
+    <p>El versionamiento en <strong>GitHub</strong> y la documentación técnica estructurada en la carpeta <code>/docs</code> del repositorio evidencian buenas prácticas de desarrollo colaborativo y gestión del conocimiento. La arquitectura del sistema, basada en Flask con Blueprints, SQLAlchemy y SQLite (migrable a PostgreSQL), garantiza portabilidad y escalabilidad para futuras iteraciones del proyecto.</p>
+  </div>
+
+  <br><br>
+  <table style="border:none;">
+    <tr>
+      <td style="border:none; text-align:center; padding:20px;">
+        <div style="border-top:2px solid #1a3a6b; width:200px; margin:0 auto; padding-top:8px; font-size:9.5pt; color:#555;">
+          Firma del Estudiante<br><br><br>
+        </div>
+      </td>
+      <td style="border:none; text-align:center; padding:20px;">
+        <div style="border-top:2px solid #1a3a6b; width:200px; margin:0 auto; padding-top:8px; font-size:9.5pt; color:#555;">
+          Firma del Docente<br><br><br>
+        </div>
+      </td>
+      <td style="border:none; text-align:center; padding:20px;">
+        <div style="border-top:2px solid #1a3a6b; width:200px; margin:0 auto; padding-top:8px; font-size:9.5pt; color:#555;">
+          Fecha de Entrega<br><br><br>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

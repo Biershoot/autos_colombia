@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Informe Iteración 3 — Parqueadero Autos Colombia</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #1a1a2e; background: #fff; }
+  :root { --primary: #1a3a6b; --accent: #e8a020; --light: #f0f4f8; --border: #cdd5e0; --success: #1e7a4a; --tag-bg: #e8f0fb; --tag-color: #1a3a6b; }
+  .badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 9pt; font-weight: 600; letter-spacing: .3px; }
+  .badge-alta { background:#fde8e8; color:#b91c1c; }
+  .badge-media { background:#fef3c7; color:#92400e; }
+  @page { size: A4; margin: 2cm 2.2cm 2cm 2.2cm; }
+  .cover { page-break-after: always; min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; }
+  .cover-top { background: var(--primary); color: #fff; padding: 40px 50px 30px; text-align: center; }
+  .cover-top .institution { font-size: 12pt; font-weight: 300; letter-spacing: 1px; text-transform: uppercase; opacity: .85; margin-bottom: 4px; }
+  .cover-top .course { font-size: 10pt; opacity: .7; margin-bottom: 20px; }
+  .cover-logo { font-size: 48pt; margin: 10px 0; }
+  .cover-title { background: var(--accent); color: #fff; padding: 28px 50px; text-align: center; }
+  .cover-title h1 { font-size: 22pt; font-weight: 700; line-height: 1.3; text-transform: uppercase; letter-spacing: .5px; }
+  .cover-title h2 { font-size: 14pt; font-weight: 400; margin-top: 8px; opacity: .9; }
+  .cover-body { padding: 30px 50px; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 14px; }
+  .cover-info-row { display: flex; border-bottom: 1px solid var(--border); padding: 8px 0; }
+  .cover-info-row .label { font-weight: 600; color: var(--primary); width: 180px; flex-shrink: 0; font-size: 10pt; text-transform: uppercase; letter-spacing: .5px; }
+  .cover-info-row .value { color: #333; font-size: 10.5pt; }
+  .cover-footer { background: var(--primary); color: rgba(255,255,255,.6); padding: 14px 50px; font-size: 9pt; text-align: center; letter-spacing: .5px; }
+  .toc-page { page-break-after: always; padding: 20px 0; }
+  .toc-page h2 { font-size: 16pt; color: var(--primary); border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-bottom: 24px; }
+  .toc-list { list-style: none; }
+  .toc-list li { display: flex; align-items: center; padding: 5px 0; border-bottom: 1px dotted var(--border); font-size: 10.5pt; }
+  .toc-list li .toc-num { background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9pt; font-weight: 700; flex-shrink: 0; margin-right: 12px; }
+  .toc-list li .toc-title { flex: 1; }
+  .toc-list li.toc-h2 .toc-num { background: var(--accent); width: 22px; height: 22px; font-size: 8pt; margin-left: 20px; }
+  .section { page-break-before: always; padding-top: 10px; }
+  h1.sec-title { font-size: 18pt; color: var(--primary); text-transform: uppercase; border-left: 6px solid var(--accent); padding-left: 14px; margin-bottom: 20px; letter-spacing: .3px; }
+  h2.sub-title { font-size: 13pt; color: var(--primary); margin: 24px 0 12px; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
+  h3.sub-sub { font-size: 11pt; color: #2c4a6e; margin: 18px 0 8px; font-weight: 600; }
+  p { margin-bottom: 10px; text-align: justify; }
+  ul, ol { margin: 8px 0 12px 22px; }
+  li { margin-bottom: 4px; }
+  .req-card { background: #fff; border: 1px solid var(--border); border-left: 5px solid var(--primary); border-radius: 6px; padding: 16px 20px; margin: 14px 0; page-break-inside: avoid; }
+  .req-card.rnf { border-left-color: var(--accent); }
+  .req-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .req-id { background: var(--primary); color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 9pt; font-weight: 700; }
+  .req-card.rnf .req-id { background: var(--accent); }
+  .req-name { font-weight: 600; font-size: 11pt; color: var(--primary); }
+  .req-field { margin: 5px 0; font-size: 10pt; }
+  .req-field strong { color: #2c4a6e; }
+  .hu-card { background: #fafbff; border: 1px solid var(--border); border-radius: 8px; padding: 18px 22px; margin: 16px 0; page-break-inside: avoid; }
+  .hu-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .hu-id { background: #6b21a8; color: #fff; padding: 3px 10px; border-radius: 4px; font-size: 9pt; font-weight: 700; display: inline-block; }
+  .hu-title { font-size: 12pt; font-weight: 700; color: var(--primary); margin-bottom: 6px; }
+  .hu-story { background: var(--light); border-radius: 6px; padding: 10px 14px; margin-bottom: 12px; font-size: 10pt; line-height: 1.7; }
+  .hu-story .como { color: #6b21a8; font-weight: 600; }
+  .hu-story .quiero { color: #1e7a4a; font-weight: 600; }
+  .hu-story .para { color: #92400e; font-weight: 600; }
+  .criteria-list { list-style: none; padding: 0; margin: 0; }
+  .criteria-list li { padding: 4px 0 4px 24px; position: relative; font-size: 10pt; border-bottom: 1px dotted #e5e7eb; }
+  .criteria-list li::before { content: '☐'; position: absolute; left: 0; color: var(--primary); }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 9.5pt; page-break-inside: avoid; }
+  th { background: var(--primary); color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 9pt; }
+  td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--light); }
+  .td-id { font-weight: 700; color: var(--primary); white-space: nowrap; }
+  .cp-card { border: 1px solid var(--border); border-radius: 6px; margin: 14px 0; overflow: hidden; page-break-inside: avoid; }
+  .cp-header { background: var(--primary); color: #fff; padding: 8px 16px; display: flex; align-items: center; gap: 12px; }
+  .cp-id { font-weight: 700; font-size: 10pt; background: var(--accent); padding: 2px 8px; border-radius: 4px; color: #fff; }
+  .cp-name { font-size: 10pt; }
+  .cp-table { width: 100%; border-collapse: collapse; }
+  .cp-table tr:nth-child(even) td { background: var(--light); }
+  .cp-table td { padding: 6px 12px; border-bottom: 1px solid var(--border); font-size: 9.5pt; vertical-align: top; }
+  .cp-table td:first-child { font-weight: 600; color: var(--primary); width: 160px; }
+  .estado-cell { display: flex; gap: 10px; }
+  .estado-btn { border: 1.5px solid var(--border); border-radius: 4px; padding: 2px 10px; font-size: 8.5pt; color: #555; }
+  .diagram-placeholder { border: 2px dashed var(--border); border-radius: 8px; padding: 30px; text-align: center; background: var(--light); margin: 16px 0; min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .diagram-placeholder .ph-icon { font-size: 32pt; opacity: .4; }
+  .diagram-placeholder .ph-title { font-size: 11pt; font-weight: 700; color: var(--primary); }
+  .diagram-placeholder .ph-hint { font-size: 9pt; color: #888; }
+  .info-box { background: #e8f0fb; border-left: 4px solid var(--primary); border-radius: 0 6px 6px 0; padding: 12px 16px; margin: 12px 0; font-size: 10pt; }
+  .url-box { background: #1a1a2e; color: #7dd3fc; font-family: 'Courier New', monospace; padding: 12px 20px; border-radius: 6px; font-size: 10pt; margin: 10px 0; word-break: break-all; }
+  .module-header { background: linear-gradient(135deg, var(--primary) 0%, #2c4a6e 100%); color: #fff; padding: 14px 20px; border-radius: 8px; margin: 20px 0 16px; }
+  .module-header h3 { font-size: 12pt; font-weight: 700; margin: 0; }
+  .module-header p { font-size: 9.5pt; opacity: .8; margin: 4px 0 0; }
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+  .summary-card { border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; background: var(--light); }
+  .summary-card .s-num { font-size: 20pt; font-weight: 700; color: var(--primary); }
+  .summary-card .s-label { font-size: 8.5pt; color: #666; margin-top: 4px; }
+  .conclusion-item { display: flex; gap: 14px; margin: 14px 0; align-items: flex-start; }
+  .conclusion-num { background: var(--accent); color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11pt; flex-shrink: 0; margin-top: 2px; }
+  .iter-badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 8pt; font-weight: 700; margin-left: 6px; }
+  .iter-1 { background: #dbeafe; color: #1d4ed8; }
+  .iter-2 { background: #f3e8ff; color: #6b21a8; }
+  .iter-3 { background: #d1fae5; color: #065f46; }
+  @media print {
+    body { font-size: 10pt; }
+    .section { page-break-before: always; }
+    .cover { page-break-after: always; }
+    .toc-page { page-break-after: always; }
+    .no-break { page-break-inside: avoid; }
+    a { color: inherit; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="cover">
+  <div class="cover-top">
+    <div class="institution">Ingeniería de Software y Datos</div>
+    <div class="course">Asignatura: Análisis y Diseño de Software</div>
+    <div class="cover-logo">🏢</div>
+  </div>
+  <div class="cover-title">
+    <h1>Sistema de Gestión Operativa<br>Parqueadero Autos Colombia</h1>
+    <h2>Iteración 3 — Gestión de Pagos</h2>
+  </div>
+  <div class="cover-body">
+    <div class="cover-info-row"><span class="label">Proyecto</span><span class="value">Parqueadero Autos Colombia — Sistema Web de Gestión</span></div>
+    <div class="cover-info-row"><span class="label">Iteración</span><span class="value">Iteración 3 de 3 (Iteración Final)</span></div>
+    <div class="cover-info-row"><span class="label">Módulo cubierto</span><span class="value">Gestión de Pagos</span></div>
+    <div class="cover-info-row"><span class="label">Tecnologías</span><span class="value">Python · Flask · SQLAlchemy · Bootstrap 5 · SQLite</span></div>
+    <div class="cover-info-row"><span class="label">Repositorio</span><span class="value">https://github.com/Biershoot/autos_colombia</span></div>
+    <div class="cover-info-row"><span class="label">Fecha</span><span class="value">Marzo 2026</span></div>
+    <div class="cover-info-row"><span class="label">Versión</span><span class="value">1.3 — Documento Final</span></div>
+  </div>
+  <div class="cover-footer">Documento de Análisis y Diseño — Uso Académico</div>
+</div>
+
+<!-- TABLA DE CONTENIDO -->
+<div class="toc-page">
+  <h2>Tabla de Contenido</h2>
+  <ul class="toc-list">
+    <li><span class="toc-num">1</span><span class="toc-title">Introducción</span></li>
+    <li><span class="toc-num">2</span><span class="toc-title">Entregables — Iteración 3</span></li>
+    <li class="toc-h2"><span class="toc-num">2.1</span><span class="toc-title">Requerimientos Funcionales — Gestión de Pagos</span></li>
+    <li class="toc-h2"><span class="toc-num">2.2</span><span class="toc-title">Requerimientos No Funcionales</span></li>
+    <li class="toc-h2"><span class="toc-num">2.3</span><span class="toc-title">Diagrama de Casos de Uso (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.4</span><span class="toc-title">Historias de Usuario</span></li>
+    <li class="toc-h2"><span class="toc-num">2.5</span><span class="toc-title">Mockups de Interfaces (Figma)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.6</span><span class="toc-title">Diagramas de Secuencia Actualizados — Iteraciones 1, 2 y 3 (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.7</span><span class="toc-title">Diagrama de Componentes Actualizado — Iteraciones 1, 2 y 3 (StarUML)</span></li>
+    <li class="toc-h2"><span class="toc-num">2.8</span><span class="toc-title">Plan de Pruebas Resumido</span></li>
+    <li class="toc-h2"><span class="toc-num">2.9</span><span class="toc-title">Repositorio GitHub y Video YouTube</span></li>
+    <li><span class="toc-num">3</span><span class="toc-title">Conclusiones</span></li>
+  </ul>
+</div>
+
+<!-- 1. INTRODUCCIÓN -->
+<div class="section">
+  <h1 class="sec-title">1. Introducción</h1>
+  <p>El presente documento corresponde al informe de la <strong>Iteración 3</strong> —iteración final— del proyecto de desarrollo del sistema de información para el parqueadero <strong>Autos Colombia</strong>, en el marco de la asignatura de Ingeniería de Software y Datos. Esta iteración culmina el ciclo de desarrollo con la construcción y documentación del módulo de <strong>Gestión de Pagos</strong>, que integra los módulos de Usuarios y Celdas desarrollados en la Iteración 2, y los movimientos vehiculares de la Iteración 1.</p>
+  <p>El módulo de pagos implementa el registro de mensualidades, la prevención de pagos duplicados, el auto-cálculo de tarifas mediante peticiones AJAX, el filtrado del historial por estado y período, y la visualización del recaudo mensual en el dashboard. Adicionalmente, esta iteración actualiza los diagramas de secuencia y de componentes para reflejar la arquitectura completa del sistema en sus tres iteraciones.</p>
+
+  <h2 class="sub-title">Objetivos de la Iteración 3</h2>
+  <ul>
+    <li>Definir y documentar los requerimientos funcionales (RF-19 a RF-25) y no funcionales (RNF-16 a RNF-21) para la gestión de pagos.</li>
+    <li>Elaborar el diagrama de casos de uso del módulo de pagos en StarUML.</li>
+    <li>Construir las historias de usuario (HU-18 a HU-23) con criterios de aceptación verificables.</li>
+    <li>Diseñar los mockups de las interfaces de gestión de pagos en Figma.</li>
+    <li>Actualizar los diagramas de secuencia y componentes incluyendo las tres iteraciones.</li>
+    <li>Establecer el plan de pruebas resumido con 12 casos de prueba trazables.</li>
+  </ul>
+
+  <h2 class="sub-title">Resumen del Proyecto por Iteraciones</h2>
+  <table>
+    <tr><th>Iteración</th><th>Módulos</th><th>Historias</th><th>Puntos</th><th>Estado</th></tr>
+    <tr><td><strong>Iteración 1</strong></td><td>Entradas/Salidas · Dashboard · Novedades · Vehículos</td><td>HU-01 a HU-09</td><td>22</td><td>✅ Completada</td></tr>
+    <tr><td><strong>Iteración 2</strong></td><td>Gestión de Usuarios · Gestión de Celdas</td><td>HU-10 a HU-17</td><td>18</td><td>✅ Completada</td></tr>
+    <tr><td><strong>Iteración 3</strong></td><td>Gestión de Pagos</td><td>HU-18 a HU-23</td><td>12</td><td>✅ Completada</td></tr>
+    <tr style="font-weight:700;background:#e8f0fb;"><td>Total</td><td>Todos los módulos</td><td>23 historias</td><td>52</td><td>✅ Sistema completo</td></tr>
+  </table>
+</div>
+
+<!-- 2. ENTREGABLES -->
+<div class="section">
+  <h1 class="sec-title">2. Entregables</h1>
+
+  <!-- 2.1 RF -->
+  <h2 class="sub-title">2.1 Requerimientos Funcionales — Gestión de Pagos</h2>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-19</span><span class="req-name">Registrar Pago Mensual</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe permitir registrar el pago de la mensualidad de un cliente por un vehículo específico.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Flujo principal:</strong>
+      <ol style="margin-top:6px;">
+        <li>El administrador selecciona usuario, vehículo, período (mes/año) y método de pago.</li>
+        <li>El sistema pre-carga el monto con la tarifa de la celda asignada al vehículo.</li>
+        <li>El sistema valida que no exista un pago para ese vehículo en ese período.</li>
+        <li>El sistema guarda el pago con estado "pagado" y fecha actual del servidor.</li>
+      </ol>
+    </div>
+    <div class="req-field"><strong>Postcondición:</strong> El pago queda registrado y el recaudo del mes se actualiza en el dashboard.</div>
+    <div class="req-field"><strong>Flujo alternativo:</strong> Si ya existe pago para ese período → <em>"Ya existe un pago registrado para este vehículo en el período seleccionado."</em></div>
+    <div class="req-field"><strong>Restricciones:</strong> Monto > 0 · Período válido · Método: efectivo / transferencia / tarjeta.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-20</span><span class="req-name">Consultar Historial de Pagos</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema debe mostrar el listado completo de pagos con paginación y ordenamiento descendente por fecha.</div>
+    <div class="req-field"><strong>Actor:</strong> Administrador</div>
+    <div class="req-field"><strong>Información por registro:</strong> Usuario · Vehículo (placa) · Período · Monto · Método · Fecha · Estado (con badge de color).</div>
+    <div class="req-field"><strong>Regla de negocio:</strong> Los pagos no pueden eliminarse físicamente del sistema.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-21</span><span class="req-name">Auto-calcular Tarifa por Vehículo (AJAX)</span></div>
+    <div class="req-field"><strong>Descripción:</strong> Al seleccionar un usuario, el sistema carga sus vehículos vía AJAX. Al seleccionar el vehículo, pre-carga el monto automáticamente con la tarifa de la celda asignada.</div>
+    <div class="req-field"><strong>Endpoint AJAX:</strong> <code>GET /payments/get_vehicles/&lt;user_id&gt;</code> → devuelve JSON con <code>[{plate, fee}]</code>.</div>
+    <div class="req-field"><strong>Regla de negocio:</strong> El monto sugerido corresponde a <code>Cell.monthly_fee</code>. El administrador puede ajustarlo manualmente.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-22</span><span class="req-name">Filtrar Pagos por Estado y Período</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema permite filtrar el historial por estado (pagado/pendiente/vencido), mes (1–12) y año, de forma combinable.</div>
+    <div class="req-field"><strong>Funcionalidades:</strong> Filtros combinables · Paginación respeta filtros activos · Opción de limpiar filtros.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-23</span><span class="req-name">Prevenir Pago Duplicado</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema rechaza el registro si ya existe un pago para la misma combinación <code>(vehicle_id, period_month, period_year)</code>.</div>
+    <div class="req-field"><strong>Actor:</strong> Sistema (validación automática)</div>
+    <div class="req-field"><strong>Restricción:</strong> La unicidad es a nivel de base de datos (constraint UNIQUE) y también validada en la capa de negocio.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-24</span><span class="req-name">Ver Recaudo Mensual en Dashboard</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El dashboard muestra la suma total de pagos con estado "pagado" del mes en curso, en tiempo real.</div>
+    <div class="req-field"><strong>Indicadores:</strong> Total recaudo COP del mes · Número de pagos del mes · Acceso directo al módulo de pagos.</div>
+  </div>
+
+  <div class="req-card">
+    <div class="req-card-header"><span class="req-id">RF-25</span><span class="req-name">Gestionar Estado de Pagos</span></div>
+    <div class="req-field"><strong>Descripción:</strong> El sistema maneja tres estados de pago con representación visual diferenciada.</div>
+    <div class="req-field"><strong>Estados:</strong></div>
+    <ul style="margin-top:6px;font-size:10pt;">
+      <li><strong>Pagado</strong> → badge verde (#198754): mensualidad cancelada.</li>
+      <li><strong>Pendiente</strong> → badge amarillo (#ffc107): pago por vencer.</li>
+      <li><strong>Vencido</strong> → badge rojo (#dc3545): período transcurrido sin pago.</li>
+    </ul>
+  </div>
+
+  <!-- 2.2 RNF -->
+  <h2 class="sub-title" style="page-break-before:always;">2.2 Requerimientos No Funcionales</h2>
+  <table>
+    <tr><th style="width:90px;">ID</th><th style="width:160px;">Nombre</th><th>Descripción</th></tr>
+    <tr><td class="td-id">RNF-16</td><td>Rendimiento</td><td>Registro de pago &lt;1 s · Listado con 10,000 registros &lt;2 s · Respuesta AJAX carga vehículos &lt;500 ms.</td></tr>
+    <tr><td class="td-id">RNF-17</td><td>Integridad Pagos</td><td>No puede existir más de un pago "pagado" por vehículo/período. Los pagos no son eliminables físicamente. Monto siempre &gt; 0. Operaciones dentro de transacción BD.</td></tr>
+    <tr><td class="td-id">RNF-18</td><td>Usabilidad</td><td>Formulario completable en &lt;1 min. Carga de vehículos sin recarga de página (AJAX). Auto-completado de monto inmediato al seleccionar vehículo.</td></tr>
+    <tr><td class="td-id">RNF-19</td><td>Consistencia Visual</td><td>Badges: Pagado #198754 · Pendiente #ffc107 · Vencido #dc3545. Historial ordenado por fecha descendente por defecto.</td></tr>
+    <tr><td class="td-id">RNF-20</td><td>Trazabilidad</td><td>Cada pago registra: fecha, usuario, vehículo, período, método. Dashboard refleja recaudo en tiempo real. Pagos no modificables ni eliminables.</td></tr>
+    <tr><td class="td-id">RNF-21</td><td>Escalabilidad</td><td>Soporte hasta 10,000 pagos mensuales sin degradación. Índices en BD sobre user_id, period_month, period_year.</td></tr>
+  </table>
+</div>
+
+<!-- 2.3 CASOS DE USO -->
+<div class="section">
+  <h1 class="sec-title">2.3 Diagrama de Casos de Uso</h1>
+  <p>El siguiente diagrama fue elaborado en <strong>StarUML</strong> siguiendo el estándar UML 2.5. Modela todos los casos de uso del módulo de Gestión de Pagos con sus relaciones <em>«include»</em> y actores.</p>
+
+  <div class="module-header">
+    <h3>CU-04 — Gestión de Pagos</h3>
+    <p>Actores: Administrador · Sistema (validaciones y automatismos AJAX)</p>
+  </div>
+
+  <div class="diagram-placeholder" style="min-height:220px;">
+    <div class="ph-icon">📊</div>
+    <div class="ph-title">Diagrama de Casos de Uso — Gestión de Pagos</div>
+    <div class="ph-hint">Insertar captura de pantalla del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Casos de uso: Registrar Pago · Validar Período Único · Auto-calcular Tarifa · Cargar Vehículos (AJAX) · Consultar Historial · Filtrar Pagos · Ver Recaudo Dashboard</div>
+  </div>
+
+  <table>
+    <tr><th>Caso de Uso</th><th>Actor</th><th>Tipo</th><th>RF</th></tr>
+    <tr><td>Registrar Pago Mensual</td><td>Administrador</td><td>Primario</td><td>RF-19</td></tr>
+    <tr><td>Validar Período Único</td><td>Sistema</td><td>«include»</td><td>RF-23</td></tr>
+    <tr><td>Auto-calcular Tarifa (AJAX)</td><td>Sistema</td><td>«include»</td><td>RF-21</td></tr>
+    <tr><td>Cargar Vehículos por Usuario</td><td>Sistema</td><td>«include»</td><td>RF-21</td></tr>
+    <tr><td>Consultar Historial de Pagos</td><td>Administrador</td><td>Primario</td><td>RF-20</td></tr>
+    <tr><td>Filtrar Pagos por Estado/Período</td><td>Administrador</td><td>Primario</td><td>RF-22</td></tr>
+    <tr><td>Ver Recaudo Mensual en Dashboard</td><td>Administrador</td><td>Primario</td><td>RF-24</td></tr>
+  </table>
+</div>
+
+<!-- 2.4 HISTORIAS DE USUARIO -->
+<div class="section">
+  <h1 class="sec-title">2.4 Historias de Usuario</h1>
+  <div class="summary-grid">
+    <div class="summary-card"><div class="s-num">6</div><div class="s-label">Historias Iteración 3</div></div>
+    <div class="summary-card"><div class="s-num">12</div><div class="s-label">Puntos de Historia</div></div>
+    <div class="summary-card"><div class="s-num">23</div><div class="s-label">Total HU Proyecto</div></div>
+    <div class="summary-card"><div class="s-num">52</div><div class="s-label">Total Puntos Proyecto</div></div>
+  </div>
+
+  <!-- HU-18 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-18</span><div class="hu-title" style="margin-top:6px;">Registrar Pago Mensual</div></div>
+      <div style="text-align:right;"><span class="badge badge-alta">Alta</span><br><small style="color:#888;">3 puntos</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> registrar el pago de la mensualidad de un cliente,<br>
+      <span class="para">para</span> mantener un control preciso de los ingresos y el estado de cartera de cada cliente.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El formulario permite seleccionar usuario, vehículo, mes, año y método de pago.</li>
+      <li>Al seleccionar el usuario, el sistema carga sus vehículos activos vía AJAX.</li>
+      <li>Al seleccionar el vehículo, el campo "Monto" se pre-carga con la tarifa de la celda.</li>
+      <li>El sistema registra el pago con la fecha actual del servidor.</li>
+      <li>Mensaje de confirmación: "Pago registrado exitosamente."</li>
+      <li>El pago aparece en el historial con badge verde (estado "pagado").</li>
+    </ul>
+  </div>
+
+  <!-- HU-19 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-19</span><div class="hu-title" style="margin-top:6px;">Auto-calcular Tarifa por Vehículo</div></div>
+      <div style="text-align:right;"><span class="badge badge-alta">Alta</span><br><small style="color:#888;">2 puntos</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> que al seleccionar un vehículo el sistema pre-cargue el monto automáticamente,<br>
+      <span class="para">para</span> reducir errores de digitación y agilizar el proceso de registro de pagos.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>Al seleccionar usuario se hace petición AJAX y carga vehículos con su placa y tarifa.</li>
+      <li>Al seleccionar vehículo, el campo "Monto" se actualiza sin recargar la página.</li>
+      <li>El monto corresponde exactamente a <code>Cell.monthly_fee</code> del vehículo seleccionado.</li>
+      <li>El administrador puede modificar el monto manualmente si necesita ajuste.</li>
+      <li>Si el usuario no tiene vehículos activos: "Este usuario no tiene vehículos registrados."</li>
+    </ul>
+  </div>
+
+  <!-- HU-20 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-20</span><div class="hu-title" style="margin-top:6px;">Consultar Historial de Pagos</div></div>
+      <div style="text-align:right;"><span class="badge badge-alta">Alta</span><br><small style="color:#888;">2 puntos</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> consultar el historial completo de pagos registrados,<br>
+      <span class="para">para</span> auditar los ingresos y verificar el estado de pago de cada cliente.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>Lista paginada ordenada por fecha descendente.</li>
+      <li>Cada registro muestra: usuario, placa, período, monto, método, fecha y estado con badge de color.</li>
+      <li>Badge verde = pagado · amarillo = pendiente · rojo = vencido.</li>
+      <li>Soporta hasta 10,000 registros sin degradación perceptible.</li>
+    </ul>
+  </div>
+
+  <!-- HU-21 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-21</span><div class="hu-title" style="margin-top:6px;">Filtrar Pagos por Estado y Período</div></div>
+      <div style="text-align:right;"><span class="badge badge-alta">Alta</span><br><small style="color:#888;">2 puntos</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> filtrar el historial de pagos por estado y período,<br>
+      <span class="para">para</span> identificar rápidamente pagos pendientes o vencidos de un mes específico y gestionar la cartera.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>Filtros disponibles: estado (pagado/pendiente/vencido), mes (1–12) y año.</li>
+      <li>Los filtros son combinables entre sí.</li>
+      <li>La paginación respeta los filtros activos.</li>
+      <li>Al limpiar filtros, se restaura el historial completo.</li>
+    </ul>
+  </div>
+
+  <!-- HU-22 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-22</span><div class="hu-title" style="margin-top:6px;">Prevenir Pago Duplicado</div></div>
+      <div style="text-align:right;"><span class="badge badge-alta">Alta</span><br><small style="color:#888;">2 puntos</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> que el sistema impida registrar dos pagos para el mismo vehículo en el mismo período,<br>
+      <span class="para">para</span> garantizar la integridad del historial y evitar cobros dobles a los clientes.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>Si ya existe pago para ese vehículo/período, el sistema rechaza el nuevo registro.</li>
+      <li>Mensaje: "Ya existe un pago registrado para este vehículo en el período seleccionado."</li>
+      <li>El formulario permanece visible con los datos ingresados para corregir.</li>
+      <li>El pago duplicado NO se guarda bajo ninguna circunstancia.</li>
+    </ul>
+  </div>
+
+  <!-- HU-23 -->
+  <div class="hu-card">
+    <div class="hu-header">
+      <div><span class="hu-id">HU-23</span><div class="hu-title" style="margin-top:6px;">Ver Recaudo Mensual en Dashboard</div></div>
+      <div style="text-align:right;"><span class="badge badge-media">Media</span><br><small style="color:#888;">1 punto</small></div>
+    </div>
+    <div class="hu-story">
+      <span class="como">Como</span> administrador del parqueadero,<br>
+      <span class="quiero">quiero</span> ver el total del recaudo del mes en el dashboard principal,<br>
+      <span class="para">para</span> tener una visión inmediata del desempeño financiero sin entrar al módulo de pagos.
+    </div>
+    <strong style="font-size:9.5pt;color:#444;">Criterios de Aceptación:</strong>
+    <ul class="criteria-list">
+      <li>El dashboard muestra la suma en COP de todos los pagos "pagado" del mes actual.</li>
+      <li>El indicador se actualiza automáticamente al registrar un nuevo pago.</li>
+      <li>Si no hay pagos en el mes actual, muestra $0.</li>
+      <li>Hay un acceso directo al módulo de pagos desde el dashboard.</li>
+    </ul>
+  </div>
+
+  <h2 class="sub-title">Resumen de Estimación — Iteración 3</h2>
+  <table>
+    <tr><th>ID</th><th>Descripción</th><th>Puntos</th><th>Prioridad</th></tr>
+    <tr><td class="td-id">HU-18</td><td>Registrar pago mensual</td><td>3</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-19</td><td>Auto-calcular tarifa por vehículo</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-20</td><td>Consultar historial de pagos</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-21</td><td>Filtrar pagos por estado y período</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-22</td><td>Prevenir pago duplicado</td><td>2</td><td><span class="badge badge-alta">Alta</span></td></tr>
+    <tr><td class="td-id">HU-23</td><td>Ver recaudo mensual en dashboard</td><td>1</td><td><span class="badge badge-media">Media</span></td></tr>
+    <tr style="font-weight:700;background:#e8f0fb;"><td colspan="2" style="text-align:right;">Total Iteración 3</td><td>12</td><td></td></tr>
+  </table>
+</div>
+
+<!-- 2.5 MOCKUPS -->
+<div class="section">
+  <h1 class="sec-title">2.5 Mockups de Interfaces (Figma)</h1>
+  <p>Los mockups fueron diseñados para las pantallas del módulo de Gestión de Pagos, manteniendo consistencia con el sistema de diseño Bootstrap 5 usado en las iteraciones anteriores.</p>
+
+  <h2 class="sub-title">M-11 — Historial de Pagos</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Historial de Pagos</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Componentes: Topbar · Sidebar · Filtros (estado/mes/año) · Tabla paginada · Badges de color por estado · Botón "+ Nuevo Pago"</div>
+  </div>
+
+  <h2 class="sub-title">M-12 — Registrar Nuevo Pago</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Formulario Registrar Pago</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">Flujo en 3 pasos: ① Seleccionar usuario → ② Selector vehículo (carga AJAX con tarifa) → ③ Período + método de pago + monto auto-calculado</div>
+    <div class="ph-hint">Ícono ⚡ indica monto auto-calculado · Método de pago: radio buttons estilizados</div>
+  </div>
+
+  <h2 class="sub-title">M-13 — Dashboard Actualizado con Recaudo</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">🖥️</div>
+    <div class="ph-title">Mockup: Dashboard con Tarjeta de Recaudo Mensual</div>
+    <div class="ph-hint">Insertar captura del mockup elaborado en Figma</div>
+    <div class="ph-hint">4 tarjetas KPI: Vehículos · Usuarios · Celdas disponibles · 💰 Recaudo mes (fondo verde #198754)</div>
+  </div>
+</div>
+
+<!-- 2.6 SECUENCIA -->
+<div class="section">
+  <h1 class="sec-title">2.6 Diagramas de Secuencia Actualizados</h1>
+  <p>Los diagramas de secuencia han sido actualizados para incluir los flujos de las tres iteraciones del proyecto. En total el sistema cuenta con <strong>10 diagramas de secuencia</strong>.</p>
+
+  <table>
+    <tr><th>ID</th><th>Nombre</th><th>Iteración</th><th>Módulo</th></tr>
+    <tr><td class="td-id">DS-01</td><td>Registrar Entrada de Vehículo</td><td><span class="iter-badge iter-1">It1</span></td><td>Movimientos</td></tr>
+    <tr><td class="td-id">DS-02</td><td>Registrar Salida de Vehículo</td><td><span class="iter-badge iter-1">It1</span></td><td>Movimientos</td></tr>
+    <tr><td class="td-id">DS-03</td><td>Registrar Nuevo Usuario</td><td><span class="iter-badge iter-2">It2</span></td><td>Usuarios</td></tr>
+    <tr><td class="td-id">DS-04</td><td>Editar Usuario</td><td><span class="iter-badge iter-2">It2</span></td><td>Usuarios</td></tr>
+    <tr><td class="td-id">DS-05</td><td>Desactivar Usuario</td><td><span class="iter-badge iter-2">It2</span></td><td>Usuarios</td></tr>
+    <tr><td class="td-id">DS-06</td><td>Crear Celda</td><td><span class="iter-badge iter-2">It2</span></td><td>Celdas</td></tr>
+    <tr><td class="td-id">DS-07</td><td>Editar Celda</td><td><span class="iter-badge iter-2">It2</span></td><td>Celdas</td></tr>
+    <tr><td class="td-id">DS-08</td><td>Registrar Pago Mensual</td><td><span class="iter-badge iter-3">It3</span></td><td>Pagos</td></tr>
+    <tr><td class="td-id">DS-09</td><td>Consultar Historial con Filtros</td><td><span class="iter-badge iter-3">It3</span></td><td>Pagos</td></tr>
+    <tr><td class="td-id">DS-10</td><td>Auto-calcular Tarifa (AJAX)</td><td><span class="iter-badge iter-3">It3</span></td><td>Pagos</td></tr>
+  </table>
+
+  <h2 class="sub-title">DS-08 — Registrar Pago Mensual <span class="iter-badge iter-3">Iteración 3</span></h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Registrar Pago Mensual</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · PaymentsController · PaymentForm · Vehicle · Payment · Database</div>
+    <div class="ph-hint">Flujo AJAX de carga de vehículos + validación de período único + commit transaccional</div>
+  </div>
+
+  <h2 class="sub-title">DS-09 — Consultar Historial con Filtros <span class="iter-badge iter-3">Iteración 3</span></h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Consultar Historial de Pagos</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador · PaymentsController · Payment · Database</div>
+    <div class="ph-hint">Flujo: GET con parámetros → query filtrada → paginación → render</div>
+  </div>
+
+  <h2 class="sub-title">DS-10 — Auto-calcular Tarifa AJAX <span class="iter-badge iter-3">Iteración 3</span></h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">↔️</div>
+    <div class="ph-title">Diagrama de Secuencia — Auto-cálculo AJAX</div>
+    <div class="ph-hint">Insertar captura del diagrama elaborado en StarUML</div>
+    <div class="ph-hint">Participantes: Administrador (JS) · PaymentsController · Vehicle · Cell · Database</div>
+    <div class="ph-hint">Flujo: fetch() → JOIN vehicles+cells → JSON response → JS actualiza campo monto</div>
+  </div>
+</div>
+
+<!-- 2.7 COMPONENTES -->
+<div class="section">
+  <h1 class="sec-title">2.7 Diagrama de Componentes Actualizado</h1>
+  <p>El diagrama de componentes ha sido actualizado para incluir el módulo de Pagos de la Iteración 3, mostrando la arquitectura completa del sistema en sus cuatro capas.</p>
+
+  <div class="diagram-placeholder" style="min-height:300px;">
+    <div class="ph-icon">🧩</div>
+    <div class="ph-title">Diagrama de Componentes — Sistema Completo (Iteraciones 1, 2 y 3)</div>
+    <div class="ph-hint">Insertar captura del diagrama actualizado elaborado en StarUML</div>
+    <div class="ph-hint">Capa Presentación: base.html + templates de users, cells, vehicles, payments[IT3], movements, incidents</div>
+    <div class="ph-hint">Capa Control: main.py · users.py[IT2] · cells.py[IT2] · payments.py[IT3] · vehicles.py · movements.py · incidents.py</div>
+    <div class="ph-hint">Capa Modelo: User · Vehicle · Cell · Payment[IT3] · Movement · Incident</div>
+    <div class="ph-hint">Capa Datos: SQLite (desarrollo) / PostgreSQL (producción)</div>
+  </div>
+
+  <h2 class="sub-title">Interfaces entre Componentes (Sistema Completo)</h2>
+  <table>
+    <tr><th>Componente Proveedor</th><th>Interfaz</th><th>Componente Consumidor</th><th>Iteración</th></tr>
+    <tr><td>users.py</td><td>«interface» IUsuarios</td><td>main.py (Dashboard)</td><td><span class="iter-badge iter-2">It2</span></td></tr>
+    <tr><td>cells.py</td><td>«interface» ICeldas</td><td>main.py (Dashboard)</td><td><span class="iter-badge iter-2">It2</span></td></tr>
+    <tr><td>cells.py</td><td>«interface» ICeldas</td><td>vehicles.py</td><td><span class="iter-badge iter-2">It2</span></td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>movements.py</td><td><span class="iter-badge iter-1">It1</span></td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>incidents.py</td><td><span class="iter-badge iter-1">It1</span></td></tr>
+    <tr><td>vehicles.py</td><td>«interface» IVehiculos</td><td>payments.py</td><td><span class="iter-badge iter-3">It3</span></td></tr>
+    <tr><td>users.py</td><td>«interface» IUsuarios</td><td>payments.py</td><td><span class="iter-badge iter-3">It3</span></td></tr>
+    <tr><td>payments.py</td><td>«interface» IPagos</td><td>main.py (Dashboard)</td><td><span class="iter-badge iter-3">It3</span></td></tr>
+  </table>
+</div>
+
+<!-- 2.8 PLAN DE PRUEBAS -->
+<div class="section">
+  <h1 class="sec-title">2.8 Plan de Pruebas Resumido</h1>
+  <div class="info-box"><strong>Objetivo:</strong> Verificar que el módulo de Gestión de Pagos cumple con RF-19 a RF-25 y HU-18 a HU-23, garantizando la calidad del sistema en su entrega final.</div>
+
+  <h2 class="sub-title">Tipos de Prueba</h2>
+  <table>
+    <tr><th>Tipo</th><th>Descripción</th></tr>
+    <tr><td>Pruebas Funcionales</td><td>Verifican el cumplimiento de los requerimientos funcionales.</td></tr>
+    <tr><td>Pruebas de Validación</td><td>Verifican reglas de negocio y restricciones de datos.</td></tr>
+    <tr><td>Pruebas AJAX</td><td>Verifican la carga dinámica de vehículos y el auto-cálculo de tarifa.</td></tr>
+    <tr><td>Pruebas de Flujo</td><td>Verifican flujos positivos y negativos (happy/sad path).</td></tr>
+    <tr><td>Pruebas de Interfaz</td><td>Verifican mensajes de error, badges y visualización correcta.</td></tr>
+  </table>
+
+  <h2 class="sub-title" style="page-break-before:always;">Casos de Prueba</h2>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P01</span><span class="cp-name">Registrar pago con datos válidos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-18, RF-19</td></tr>
+      <tr><td>Precondición</td><td>Existe usuario y vehículo activo con celda asignada. No hay pago para ese vehículo en marzo 2026.</td></tr>
+      <tr><td>Datos de entrada</td><td>Usuario: Carlos Pérez · Vehículo: ABC-123 · Mes: Marzo · Año: 2026 · Método: Efectivo</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. Seleccionar usuario. 3. Seleccionar vehículo. 4. Verificar monto pre-cargado. 5. Seleccionar período y método. 6. Registrar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Pago creado con estado "pagado". Aparece en historial con badge verde. Mensaje: "Pago registrado exitosamente."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P02</span><span class="cp-name">Registrar pago duplicado (mismo vehículo, mismo período)</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-22, RF-23</td></tr>
+      <tr><td>Precondición</td><td>Ya existe pago para ABC-123 en marzo 2026.</td></tr>
+      <tr><td>Datos de entrada</td><td>Mismo usuario, vehículo ABC-123 y período marzo 2026.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. Seleccionar mismo vehículo y período. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error: "Ya existe un pago registrado para este vehículo en el período seleccionado." El pago NO se registra.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P03</span><span class="cp-name">Registrar pago con monto cero</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-19, RNF-17</td></tr>
+      <tr><td>Datos de entrada</td><td>Monto: 0</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. Ingresar monto 0. 3. Guardar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Error de validación. El pago NO se registra.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P04</span><span class="cp-name">Registrar pago con campos vacíos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-19, RNF-18</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. No ingresar datos. 3. Clic en "Registrar Pago".</td></tr>
+      <tr><td>Resultado esperado</td><td>Mensajes de validación en campos obligatorios. El formulario NO se envía.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P05</span><span class="cp-name">Auto-carga de vehículos al seleccionar usuario (AJAX)</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-19, RF-21</td></tr>
+      <tr><td>Precondición</td><td>El usuario Carlos Pérez tiene 2 vehículos activos.</td></tr>
+      <tr><td>Datos de entrada</td><td>Seleccionar usuario: "Carlos Pérez"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. Seleccionar al usuario Carlos Pérez.</td></tr>
+      <tr><td>Resultado esperado</td><td>Sin recargar la página, el selector de vehículo se llena con sus 2 vehículos mostrando placa y tarifa de cada uno.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P06</span><span class="cp-name">Auto-cálculo del monto al seleccionar vehículo</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-19, RF-21</td></tr>
+      <tr><td>Precondición</td><td>Vehículo ABC-123 tiene celda 1001 con tarifa $150,000.</td></tr>
+      <tr><td>Pasos</td><td>1. En formulario de nuevo pago, con usuario seleccionado. 2. Seleccionar vehículo ABC-123.</td></tr>
+      <tr><td>Resultado esperado</td><td>El campo "Monto" se actualiza automáticamente a $150,000 sin recargar la página.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P07</span><span class="cp-name">Usuario sin vehículos activos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-19, RF-21</td></tr>
+      <tr><td>Precondición</td><td>El usuario seleccionado no tiene vehículos activos.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos → Nuevo Pago. 2. Seleccionar usuario sin vehículos.</td></tr>
+      <tr><td>Resultado esperado</td><td>El selector muestra: "Este usuario no tiene vehículos registrados."</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P08</span><span class="cp-name">Consultar historial de pagos</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-20, RF-20</td></tr>
+      <tr><td>Precondición</td><td>Existen pagos registrados.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al módulo de Pagos.</td></tr>
+      <tr><td>Resultado esperado</td><td>Lista paginada con usuario, placa, período, monto, método, fecha y badge de color por estado. Ordenada por fecha descendente.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P09</span><span class="cp-name">Filtrar pagos por estado "pagado"</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-21, RF-22</td></tr>
+      <tr><td>Datos de entrada</td><td>Filtro estado: "pagado"</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos. 2. Seleccionar filtro Estado: Pagado. 3. Filtrar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Solo se muestran pagos con badge verde (estado pagado).</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P10</span><span class="cp-name">Filtrar pagos por mes y año</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-21, RF-22</td></tr>
+      <tr><td>Datos de entrada</td><td>Mes: Marzo (3) · Año: 2026</td></tr>
+      <tr><td>Pasos</td><td>1. Ir a Pagos. 2. Seleccionar Mes: Marzo y Año: 2026. 3. Filtrar.</td></tr>
+      <tr><td>Resultado esperado</td><td>Solo se muestran pagos del período marzo 2026.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P11</span><span class="cp-name">Verificar recaudo en el dashboard</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>HU-23, RF-24</td></tr>
+      <tr><td>Precondición</td><td>Existen pagos "pagado" en el mes actual.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al Dashboard. 2. Observar la tarjeta de Recaudo.</td></tr>
+      <tr><td>Resultado esperado</td><td>La tarjeta muestra la suma correcta en COP de todos los pagos "pagado" del mes actual.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <div class="cp-card">
+    <div class="cp-header"><span class="cp-id">CP-P12</span><span class="cp-name">Verificar badges de estado en historial</span></div>
+    <table class="cp-table">
+      <tr><td>Historia / RF</td><td>RF-25, RNF-19</td></tr>
+      <tr><td>Precondición</td><td>Existen pagos con los tres estados posibles.</td></tr>
+      <tr><td>Pasos</td><td>1. Ir al historial de pagos sin filtros.</td></tr>
+      <tr><td>Resultado esperado</td><td>"Pagado" → badge verde · "Pendiente" → badge amarillo · "Vencido" → badge rojo.</td></tr>
+      <tr><td>Estado</td><td><div class="estado-cell"><span class="estado-btn">⬜ Pendiente</span><span class="estado-btn">✅ Aprobado</span><span class="estado-btn">❌ Fallido</span></div></td></tr>
+    </table>
+  </div>
+
+  <h2 class="sub-title">Matriz de Trazabilidad</h2>
+  <table>
+    <tr><th>Caso de Prueba</th><th>Historia de Usuario</th><th>Req. Funcional</th><th>Req. No Funcional</th></tr>
+    <tr><td class="td-id">CP-P01</td><td>HU-18</td><td>RF-19</td><td>RNF-17, RNF-18</td></tr>
+    <tr><td class="td-id">CP-P02</td><td>HU-22</td><td>RF-23</td><td>RNF-17</td></tr>
+    <tr><td class="td-id">CP-P03</td><td>HU-18</td><td>RF-19</td><td>RNF-17</td></tr>
+    <tr><td class="td-id">CP-P04</td><td>HU-18</td><td>RF-19</td><td>RNF-18</td></tr>
+    <tr><td class="td-id">CP-P05</td><td>HU-19</td><td>RF-21</td><td>RNF-16, RNF-18</td></tr>
+    <tr><td class="td-id">CP-P06</td><td>HU-19</td><td>RF-21</td><td>RNF-16, RNF-18</td></tr>
+    <tr><td class="td-id">CP-P07</td><td>HU-19</td><td>RF-21</td><td>RNF-18</td></tr>
+    <tr><td class="td-id">CP-P08</td><td>HU-20</td><td>RF-20</td><td>RNF-16, RNF-19</td></tr>
+    <tr><td class="td-id">CP-P09</td><td>HU-21</td><td>RF-22</td><td>RNF-19</td></tr>
+    <tr><td class="td-id">CP-P10</td><td>HU-21</td><td>RF-22</td><td>RNF-16</td></tr>
+    <tr><td class="td-id">CP-P11</td><td>HU-23</td><td>RF-24</td><td>RNF-20</td></tr>
+    <tr><td class="td-id">CP-P12</td><td>HU-20</td><td>RF-25</td><td>RNF-19</td></tr>
+  </table>
+
+  <h2 class="sub-title">Criterios de Aceptación del Plan</h2>
+  <table>
+    <tr><th>Criterio</th><th>Condición de Éxito</th></tr>
+    <tr><td>Casos de prueba ejecutados</td><td>100% ejecutados</td></tr>
+    <tr><td>Casos de prueba aprobados</td><td>≥ 90% aprobados</td></tr>
+    <tr><td>Defectos críticos sin resolver</td><td>0 de severidad Alta</td></tr>
+    <tr><td>Tiempo de registro de pago</td><td>&lt; 1 segundo</td></tr>
+    <tr><td>Respuesta AJAX carga vehículos</td><td>&lt; 500 ms</td></tr>
+    <tr><td>Listado con 10,000 registros</td><td>&lt; 2 segundos</td></tr>
+  </table>
+</div>
+
+<!-- 2.9 GITHUB Y YOUTUBE -->
+<div class="section">
+  <h1 class="sec-title">2.9 Repositorio GitHub y Video YouTube</h1>
+
+  <h2 class="sub-title">Repositorio de Código Fuente</h2>
+  <p>El código fuente del proyecto se encuentra alojado en GitHub con toda la documentación generada en las tres iteraciones del proyecto.</p>
+  <div class="url-box">🔗 https://github.com/Biershoot/autos_colombia</div>
+  <table>
+    <tr><th>Elemento</th><th>Descripción</th></tr>
+    <tr><td>Rama principal</td><td>main</td></tr>
+    <tr><td>Commits Iteración 3</td><td>docs: agregar documentación completa Iteración 3</td></tr>
+    <tr><td>Archivos nuevos It3</td><td>docs/requerimientos_it3.md · docs/historias_it3.md · docs/diagramas_it3.md · docs/plan_de_pruebas_it3.md</td></tr>
+    <tr><td>Tecnologías</td><td>Python 3.10+ · Flask 3.0.0 · SQLAlchemy · Bootstrap 5</td></tr>
+  </table>
+
+  <h2 class="sub-title">Video Demostrativo en YouTube</h2>
+  <div class="diagram-placeholder">
+    <div class="ph-icon">▶️</div>
+    <div class="ph-title">Video Demostrativo — Parqueadero Autos Colombia</div>
+    <div class="ph-hint">Insertar URL del video publicado en YouTube</div>
+    <div class="ph-hint">Ejemplo: https://www.youtube.com/watch?v=XXXXXXXXXX</div>
+    <div class="ph-hint">El video debe mostrar: dashboard · entradas/salidas · usuarios · celdas · pagos (registro, filtros, auto-cálculo)</div>
+  </div>
+</div>
+
+<!-- 3. CONCLUSIONES -->
+<div class="section">
+  <h1 class="sec-title">3. Conclusiones</h1>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">1</div>
+    <p>La <strong>Iteración 3</strong> culmina el ciclo de desarrollo del sistema Parqueadero Autos Colombia con la implementación del módulo de Gestión de Pagos, completando así los tres pilares operativos del negocio: el control de acceso vehicular (Iteración 1), la gestión de clientes y espacios físicos (Iteración 2) y la facturación mensual (Iteración 3). El sistema resultante cubre de forma integral las necesidades operativas del parqueadero.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">2</div>
+    <p>La implementación del <strong>auto-cálculo de tarifas mediante AJAX</strong> representa una funcionalidad técnica destacada: al seleccionar un vehículo, el sistema consulta asíncronamente la tarifa de la celda asignada y pre-carga el campo de monto, eliminando la necesidad de que el operador recuerde o consulte las tarifas manualmente. Esto reduce significativamente los errores de digitación y agiliza el proceso de registro.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">3</div>
+    <p>La <strong>prevención de pagos duplicados</strong>, implementada tanto a nivel de restricción de base de datos (<code>UNIQUE constraint</code>) como en la capa de negocio (validación en el controlador), garantiza la integridad del historial financiero. Esta doble capa de validación es una práctica recomendada en sistemas de información que manejan transacciones económicas.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">4</div>
+    <p>Los <strong>diagramas de secuencia y de componentes actualizados</strong> reflejan fielmente la arquitectura del sistema en su versión final. El diagrama de componentes evidencia cómo el módulo de Pagos actúa como integrador de los módulos de Usuarios, Vehículos y Celdas, cerrando el ciclo de negocio del parqueadero: un usuario tiene vehículos, los vehículos ocupan celdas, y las celdas determinan el monto de los pagos mensuales.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">5</div>
+    <p>El proyecto acumula <strong>52 puntos de historia en 23 historias de usuario</strong> a lo largo de sus tres iteraciones, con una cobertura de pruebas de 44 casos de prueba (20 en Iteración 2 + 12 en Iteración 3 + 12 en planes de prueba). La metodología iterativa aplicada permitió entregar valor funcional en cada ciclo, reduciendo el riesgo técnico y facilitando la validación temprana de requisitos con el usuario final.</p>
+  </div>
+
+  <div class="conclusion-item">
+    <div class="conclusion-num">6</div>
+    <p>El sistema Parqueadero Autos Colombia, en su versión final, demuestra la viabilidad de construir aplicaciones web de gestión operativa con tecnologías de código abierto (<strong>Python + Flask + SQLAlchemy + Bootstrap 5</strong>). La arquitectura MVC implementada, con separación clara de responsabilidades entre Blueprints (controladores), modelos SQLAlchemy y templates Jinja2, garantiza la mantenibilidad y escalabilidad del sistema para futuras mejoras como autenticación, reportes en PDF o notificaciones automáticas de pagos vencidos.</p>
+  </div>
+
+  <br><br>
+  <table style="border:none;">
+    <tr>
+      <td style="border:none;text-align:center;padding:20px;">
+        <div style="border-top:2px solid #1a3a6b;width:200px;margin:0 auto;padding-top:8px;font-size:9.5pt;color:#555;">
+          Firma del Estudiante<br><br><br>
+        </div>
+      </td>
+      <td style="border:none;text-align:center;padding:20px;">
+        <div style="border-top:2px solid #1a3a6b;width:200px;margin:0 auto;padding-top:8px;font-size:9.5pt;color:#555;">
+          Firma del Docente<br><br><br>
+        </div>
+      </td>
+      <td style="border:none;text-align:center;padding:20px;">
+        <div style="border-top:2px solid #1a3a6b;width:200px;margin:0 auto;padding-top:8px;font-size:9.5pt;color:#555;">
+          Fecha de Entrega<br><br><br>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>

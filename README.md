@@ -1,22 +1,32 @@
 # 🏢 Parqueadero Autos Colombia
 
-Sistema web de gestión operativa para parqueaderos con servicio de mensualidad. Desarrollado como proyecto académico en la asignatura de **Ingeniería de Software y Datos**, completando las 3 iteraciones del ciclo de desarrollo.
+![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat&logo=python&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-3.0-000000?style=flat&logo=flask&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-7952B3?style=flat&logo=bootstrap&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=flat&logo=sqlite&logoColor=white)
+![License](https://img.shields.io/badge/Uso-Académico-orange?style=flat)
+
+Sistema web de gestión operativa para parqueaderos con servicio de mensualidad, desarrollado en **3 iteraciones** como proyecto de la asignatura **Ingeniería de Software y Datos**.
 
 ---
 
-## ¿Qué hace el sistema?
+## Descripción
 
-El parqueadero **Autos Colombia** opera bajo un modelo de mensualidad fija: cada cliente registra sus vehículos y se le asigna una celda dentro de las instalaciones. El sistema reemplaza los registros manuales en papel con una interfaz web que centraliza toda la operación diaria.
+El parqueadero **Autos Colombia** opera bajo un modelo de mensualidad fija: cada cliente registra sus vehículos y se le asigna una celda dentro de las instalaciones. El sistema reemplaza los registros manuales en papel con una aplicación web centralizada que cubre toda la operación diaria.
+
+---
+
+## Funcionalidades
 
 | Módulo | Descripción |
 |--------|-------------|
-| 📊 **Dashboard** | Métricas en tiempo real: vehículos, usuarios, celdas, recaudo mensual |
-| 🚗 **Entradas y Salidas** | Registro de movimientos con validaciones de doble entrada/salida |
-| 👤 **Usuarios** | CRUD de clientes con historial de vehículos y pagos |
-| 🅿️ **Celdas** | Vista visual en grid con estado disponible/ocupada por piso |
-| 🚙 **Vehículos** | Registro con asignación automática de celda disponible |
-| 💰 **Pagos** | Mensualidades con auto-cálculo de tarifa vía AJAX |
-| ⚠️ **Novedades** | Registro y seguimiento de incidentes por vehículo |
+| 📊 **Dashboard** | KPIs en tiempo real: vehículos activos, usuarios, celdas disponibles y recaudo mensual |
+| 🚗 **Entradas y Salidas** | Registro de movimientos con validaciones (no doble entrada, no salida sin entrada) |
+| 👤 **Usuarios** | CRUD de clientes con historial de vehículos y pagos asociados |
+| 🅿️ **Celdas** | Panel visual en grid con estado disponible/ocupada, filtros por piso y tipo |
+| 🚙 **Vehículos** | Registro completo con asignación de celda disponible |
+| 💰 **Pagos** | Mensualidades con auto-cálculo de tarifa vía AJAX y prevención de duplicados |
+| ⚠️ **Novedades** | Registro y seguimiento de incidentes por vehículo con niveles de severidad |
 
 ---
 
@@ -24,18 +34,17 @@ El parqueadero **Autos Colombia** opera bajo un modelo de mensualidad fija: cada
 
 | Capa | Tecnología |
 |------|-----------|
-| Backend | Python 3.10+ · Flask 3.0 |
+| Backend | Python 3.10+ · Flask 3.0 · Flask-WTF |
 | ORM | SQLAlchemy 3.1 |
-| Formularios | Flask-WTF · WTForms |
 | Base de datos | SQLite (desarrollo) · PostgreSQL (producción) |
 | Frontend | Jinja2 · Bootstrap 5 · Bootstrap Icons |
 | Arquitectura | MVC — Blueprints + Models + Templates |
 
 ---
 
-## Instalación
+## Instalación y Ejecución
 
-**Requisitos:** Python 3.10 o superior
+**Requisito:** Python 3.10 o superior
 
 ```bash
 # 1. Clonar el repositorio
@@ -51,14 +60,13 @@ python run.py
 
 Abrir en el navegador: **http://localhost:5000**
 
-La base de datos SQLite se crea automáticamente con celdas preconfiguradas (3 pisos × 3 tipos).
+> La base de datos SQLite se crea automáticamente en `database/autos_colombia.db` con celdas preconfiguradas en 3 pisos × 3 tipos (carro, moto, camión).
 
-### Cargar datos de prueba (opcional)
+### Cargar datos de prueba
 
 ```bash
 python -c "
 from app import create_app, db
-from app.models import *
 app = create_app()
 with app.app_context():
     with open('database/seed.sql') as f:
@@ -66,8 +74,7 @@ with app.app_context():
         for stmt in f.read().split(';'):
             stmt = stmt.strip()
             if stmt:
-                try:
-                    db.session.execute(text(stmt))
+                try: db.session.execute(text(stmt))
                 except: pass
         db.session.commit()
 print('Datos de prueba cargados.')
@@ -81,34 +88,21 @@ print('Datos de prueba cargados.')
 ```
 autos_colombia/
 ├── app/
-│   ├── __init__.py          # App factory + registro de blueprints + seed de celdas
-│   ├── models.py            # Modelos SQLAlchemy: User, Vehicle, Cell, Movement, Payment, Incident
+│   ├── __init__.py          # App factory · registro de blueprints · seed de celdas
+│   ├── models.py            # User · Vehicle · Cell · Movement · Payment · Incident
 │   ├── routes/
-│   │   ├── main.py          # Dashboard con métricas
+│   │   ├── main.py          # Dashboard
 │   │   ├── movements.py     # Entradas y salidas
-│   │   ├── vehicles.py      # Gestión de vehículos
-│   │   ├── users.py         # Gestión de usuarios
-│   │   ├── cells.py         # Gestión de celdas
-│   │   ├── payments.py      # Gestión de pagos (incluye endpoint AJAX)
-│   │   └── incidents.py     # Gestión de novedades
-│   └── templates/           # Templates Jinja2 por módulo
+│   │   ├── users.py         # Usuarios
+│   │   ├── cells.py         # Celdas
+│   │   ├── vehicles.py      # Vehículos
+│   │   ├── payments.py      # Pagos + endpoint AJAX /get_vehicles/<id>
+│   │   └── incidents.py     # Novedades
+│   └── templates/           # Templates Jinja2 organizados por módulo
 ├── database/
-│   ├── schema.sql           # DDL — modelo físico de base de datos
+│   ├── schema.sql           # DDL completo con índices
 │   └── seed.sql             # Datos de prueba
-├── docs/                    # Documentación académica por iteración
-│   ├── requerimientos.md         # It1: RF-01 a RF-09, RNF-01 a RNF-08
-│   ├── historias_de_usuario.md   # It1: HU-01 a HU-09
-│   ├── diagramas.md              # It1: UML, MER, MR, Casos de Uso
-│   ├── requerimientos_it2.md     # It2: RF-10 a RF-18, RNF-09 a RNF-15
-│   ├── historias_it2.md          # It2: HU-10 a HU-17
-│   ├── diagramas_it2.md          # It2: Casos de uso, secuencia, componentes, mockups
-│   ├── plan_de_pruebas_it2.md    # It2: 20 casos de prueba
-│   ├── requerimientos_it3.md     # It3: RF-19 a RF-25, RNF-16 a RNF-21
-│   ├── historias_it3.md          # It3: HU-18 a HU-23
-│   ├── diagramas_it3.md          # It3: Casos de uso, secuencia, componentes, mockups
-│   ├── plan_de_pruebas_it3.md    # It3: 12 casos de prueba
-│   ├── informe_iteracion2.html   # Informe completo It2 (abrir en Chrome → PDF)
-│   └── informe_iteracion3.html   # Informe completo It3 (abrir en Chrome → PDF)
+├── docs/                    # Documentación académica
 ├── config.py
 ├── run.py
 └── requirements.txt
@@ -116,21 +110,43 @@ autos_colombia/
 
 ---
 
-## Iteraciones del Proyecto
+## Documentación Académica
+
+La carpeta `docs/` contiene todos los artefactos de análisis y diseño del proyecto organizados por iteración.
+
+### Iteración 1 — Entradas, Salidas y Dashboard
+| Archivo | Contenido |
+|---------|-----------|
+| `requerimientos.md` | RF-01 a RF-09 · RNF-01 a RNF-08 |
+| `historias_de_usuario.md` | HU-01 a HU-09 con criterios de aceptación |
+
+### Iteración 2 — Usuarios y Celdas
+| Archivo | Contenido |
+|---------|-----------|
+| `requerimientos_it2.md` | RF-10 a RF-18 · RNF-09 a RNF-15 |
+| `historias_it2.md` | HU-10 a HU-17 con criterios de aceptación |
+| `plan_de_pruebas_it2.md` | 20 casos de prueba con matriz de trazabilidad |
+| `informe_iteracion2.html` | Informe completo listo para exportar a PDF |
+
+### Iteración 3 — Gestión de Pagos
+| Archivo | Contenido |
+|---------|-----------|
+| `requerimientos_it3.md` | RF-19 a RF-25 · RNF-16 a RNF-21 |
+| `historias_it3.md` | HU-18 a HU-23 con criterios de aceptación |
+| `plan_de_pruebas_it3.md` | 12 casos de prueba con matriz de trazabilidad |
+| `informe_iteracion3.html` | Informe completo listo para exportar a PDF |
+
+### Resumen del Proyecto
 
 | Iteración | Módulos | Historias | Puntos |
-|-----------|---------|-----------|--------|
-| **It1** — Entradas/Salidas | Movimientos · Dashboard · Vehículos · Novedades | HU-01 a HU-09 | 22 |
-| **It2** — Usuarios y Celdas | Gestión de Usuarios · Gestión de Celdas | HU-10 a HU-17 | 18 |
-| **It3** — Pagos | Gestión de Pagos (con AJAX) | HU-18 a HU-23 | 12 |
-| **Total** | 7 módulos | 23 historias | **52 puntos** |
+|-----------|---------|:---------:|:------:|
+| It1 | Movimientos · Dashboard · Vehículos · Novedades | HU-01–09 | 22 |
+| It2 | Usuarios · Celdas | HU-10–17 | 18 |
+| It3 | Pagos | HU-18–23 | 12 |
+| **Total** | **7 módulos** | **23** | **52** |
 
----
+### Generar informes PDF
 
-## Generar informes PDF
-
-Los informes de cada iteración están en `docs/` como archivos HTML. Para convertirlos a PDF:
-
-1. Abrir el archivo en **Google Chrome**
+1. Abrir `docs/informe_iteracion2.html` o `docs/informe_iteracion3.html` en **Google Chrome**
 2. `Ctrl + P` → **Guardar como PDF**
 3. Activar **"Gráficos de fondo"** · Desmarcar **"Encabezados y pies de página"**
